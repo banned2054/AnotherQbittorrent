@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using AnotherQbittorrent.Models.Enums;
 using RestSharp;
 
 namespace AnotherQbittorrent.Utils;
@@ -20,7 +21,7 @@ public class NetUtils
         Login();
     }
 
-    public async Task<string> AsyncFetch(string subPath)
+    public async Task<(HttpStatusCode, string)> AsyncFetch(string subPath)
     {
         RestRequest request = new(subPath)
         {
@@ -33,7 +34,12 @@ public class NetUtils
 
             if (response.IsSuccessful)
             {
-                return response.Content ?? string.Empty;
+                return (HttpStatusCode.OK, (response.Content ?? string.Empty));
+            }
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return (HttpStatusCode.NotFound, string.Empty);
             }
 
             throw new Exception($"Error: {response.StatusCode} - {response.ErrorMessage}");
@@ -45,7 +51,7 @@ public class NetUtils
         }
     }
 
-    public string Fetch(string subPath)
+    public (HttpStatusCode, string) Fetch(string subPath)
     {
         RestRequest request = new(subPath)
         {
@@ -58,7 +64,12 @@ public class NetUtils
 
             if (response.IsSuccessful)
             {
-                return response.Content ?? string.Empty;
+                return (HttpStatusCode.OK, (response.Content ?? string.Empty));
+            }
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return (HttpStatusCode.NotFound, string.Empty);
             }
 
             throw new Exception($"Error: {response.StatusCode} - {response.ErrorMessage}");

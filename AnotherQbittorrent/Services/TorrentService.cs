@@ -1,4 +1,6 @@
-﻿using AnotherQbittorrent.Models.Enums;
+﻿using System.ComponentModel;
+using System.Net;
+using AnotherQbittorrent.Models.Enums;
 using AnotherQbittorrent.Models.Requests;
 using AnotherQbittorrent.Models.Torrent;
 using AnotherQbittorrent.Utils;
@@ -36,8 +38,8 @@ public class TorrentService(NetUtils netUtils)
             requestPara = "?" + requestPara;
         }
 
-        var stringResponse = netUtils.Fetch($"{BaseUrl}/info{requestPara}");
-        return StringToTorrentInfoList(stringResponse);
+        var response = netUtils.Fetch($"{BaseUrl}/info{requestPara}");
+        return StringToTorrentInfoList(response.Item2);
     }
 
     public async Task<List<TorrentInfo>?> AsyncGetTorrentInfos(EnumTorrentFilter filter   = EnumTorrentFilter.All,
@@ -66,18 +68,18 @@ public class TorrentService(NetUtils netUtils)
             requestPara = "?" + requestPara;
         }
 
-        var stringResponse = await netUtils.AsyncFetch($"{BaseUrl}/info{requestPara}");
-        return StringToTorrentInfoList(stringResponse);
+        var response = await netUtils.AsyncFetch($"{BaseUrl}/info{requestPara}");
+        return StringToTorrentInfoList(response.Item2);
     }
 
-    public static List<TorrentInfo>? StringToTorrentInfoList(string stringResponse)
+    public static List<TorrentInfo>? StringToTorrentInfoList(string jsonString)
     {
         try
         {
             var options = new JsonSerializerOptions();
             options.Converters.Add(new TorrentInfoConverter());
 
-            var torrentInfos = JsonSerializer.Deserialize<List<TorrentInfo>>(stringResponse, options);
+            var torrentInfos = JsonSerializer.Deserialize<List<TorrentInfo>>(jsonString, options);
             return torrentInfos;
         }
         catch (JsonException ex)
@@ -195,5 +197,16 @@ public class TorrentService(NetUtils netUtils)
     {
         var hash = string.Join('|', hashList.ToArray());
         await AsyncPauseTorrent(hash);
+    }
+
+    public List<TrackerInfo> GetTrackerList(string hash)
+    {
+        var response = netUtils.Fetch($"{BaseUrl}/trackers?hash={hash}");
+        if (response.Item1 == HttpStatusCode.NotFound)
+        {
+            return new();
+        }
+
+        return new();
     }
 }
