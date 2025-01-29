@@ -18,16 +18,11 @@ jobs:
               with:
                   dotnet-version: 8.0.x # 替换为你的 .NET 版本
 
-            - name: Extract version from tag
-              id: get_version
-              run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-
-            - name: Update project file with new version
-              run: |
-                  sed -i 's/<Version>.*<\/Version>/<Version>'"$VERSION"'<\/Version>/' AnotherQbittorrent/AnotherQbittorrent.csproj
+            - name: Clear NuGet Cache
+              run: dotnet nuget locals all --clear # 强制清理缓存
 
             - name: Restore dependencies
-              run: dotnet restore AnotherQbittorrent/AnotherQbittorrent.csproj
+              run: dotnet restore AnotherQbittorrent/AnotherQbittorrent.csproj --disable-parallel --no-cache --no-dependencies
 
             - name: Build project
               run: dotnet build AnotherQbittorrent/AnotherQbittorrent.csproj --configuration Release --no-restore
