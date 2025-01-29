@@ -14,9 +14,4 @@
 	<ItemGroup>
 		<PackageReference Include="RestSharp" Version="112.1.0" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<!-- 确保测试项目不会被打包 -->
-		<ProjectReference Include="..\AnotherQbittorrent.Test\AnotherQbittorrent.Test.csproj" PrivateAssets="All" />
-	</ItemGroup>
 </Project>
