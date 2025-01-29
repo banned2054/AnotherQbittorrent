@@ -3,15 +3,13 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<PackageId>AnotherQbittorrent</PackageId>
-		<Version>0.0.1-alpha</Version>
+		<Version>0.0.2-alpha</Version>
 		<RepositoryUrl>https://github.com/banned2054/AnotherQbittorrent</RepositoryUrl>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<Nullable>enable</Nullable>
 		<Description>Another qBittorrent api library</Description>
-		<PackageReadmeFile>..\README.md</PackageReadmeFile>
 	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="RestSharp" Version="112.1.0" />
 	</ItemGroup>
