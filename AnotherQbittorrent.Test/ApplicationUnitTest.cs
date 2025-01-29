@@ -1,10 +1,8 @@
-using AnotherQbittorrent.Models.Enums;
 using System.Text.Json;
-using AnotherQbittorrent.Services;
 
 namespace AnotherQbittorrent.Test;
 
-public class Tests
+public class ApplicationUnitTest
 {
     public class TestConfig
     {
@@ -19,7 +17,7 @@ public class Tests
     public void SetUp()
     {
         // 从 JSON 文件中读取配置
-        var config = JsonSerializer.Deserialize<TestConfig>(File.ReadAllText("test-config.json"));
+        var config = JsonSerializer.Deserialize<TorrentUnitTest.TestConfig>(File.ReadAllText("test-config.json"));
         _client = new QBittorrentClient(config.BaseUrl, config.Username, config.Password);
     }
 
@@ -36,13 +34,6 @@ public class Tests
     {
         var buildInfo = _client.Application.GetBuildInfo();
         Console.WriteLine(buildInfo);
-        Assert.Pass();
-    }
-
-    [Test]
-    public void TestGetTorrentList()
-    {
-        var torrentList = _client.Torrent.GetTorrentInfos(EnumTorrentFilter.All, null, "tv");
         Assert.Pass();
     }
 }
