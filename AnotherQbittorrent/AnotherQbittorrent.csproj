@@ -1,13 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<PackageId>AnotherQbittorrent</PackageId>
+		<Version>1.0.0</Version>
+		<RepositoryUrl>https://github.com/banned2054/AnotherQbittorrent</RepositoryUrl>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+		<Nullable>enable</Nullable>
+		<Description>Another qBittorrent api library</Description>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="RestSharp" Version="112.1.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="RestSharp" Version="112.1.0" />
+	</ItemGroup>
 
+	<ItemGroup>
+		<!-- 确保测试项目不会被打包 -->
+		<ProjectReference Include="..\AnotherQbittorrent.Test\AnotherQbittorrent.Test.csproj" PrivateAssets="All" />
+	</ItemGroup>
 </Project>

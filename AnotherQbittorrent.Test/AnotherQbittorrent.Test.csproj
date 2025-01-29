@@ -10,7 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Include="ApplicationUnitTest.cs" />
+		<None Include="ApplicationUnitTest.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
