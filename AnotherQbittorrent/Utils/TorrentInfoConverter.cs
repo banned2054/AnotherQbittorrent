@@ -31,7 +31,7 @@ public class TorrentInfoConverter : JsonConverter<TorrentInfo>
             FirstLastPiecePriority = dictionary["f_l_piece_prio"].GetBoolean(),
             ForceStart = dictionary["force_start"].GetBoolean(),
             Hash = dictionary["hash"].GetString(),
-            IsPrivate = dictionary["isPrivate"].GetBoolean(),
+            IsPrivate = dictionary.TryGetValue("isPrivate", out var isPrivateElement) && isPrivateElement.GetBoolean(),
             LastActivity = FromUnixTimeSeconds(dictionary["last_activity"].GetInt64()),
             MagnetUri = dictionary["magnet_uri"].GetString(),
             MaxRatio = dictionary["max_ratio"].GetSingle(),
