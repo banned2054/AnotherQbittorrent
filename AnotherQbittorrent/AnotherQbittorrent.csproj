@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<PackageId>AnotherQbittorrent</PackageId>
-		<Version>0.0.3-alpha</Version>
+		<Version>0.0.4-alpha</Version>
 		<RepositoryUrl>https://github.com/banned2054/AnotherQbittorrent</RepositoryUrl>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

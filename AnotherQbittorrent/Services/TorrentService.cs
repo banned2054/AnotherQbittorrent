@@ -341,4 +341,164 @@ public class TorrentService(NetUtils netUtils)
 
         return await AddTorrentAsync(request);
     }
+
+    public List<TorrentFileInfo>? GetTorrentContents(string hash, List<int>? indexes = null)
+    {
+        if (string.IsNullOrEmpty(hash))
+        {
+            throw new ArgumentException("Torrent hash cannot be null or empty", nameof(hash));
+        }
+
+        var requestUrl = $"{BaseUrl}/files?hash={Uri.EscapeDataString(hash)}";
+
+        if (indexes is { Count: > 0 })
+        {
+            requestUrl += $"&indexes={string.Join("|", indexes)}";
+        }
+
+        var response = netUtils.Get(requestUrl);
+
+        if (response.Item1 == HttpStatusCode.NotFound)
+        {
+            Console.WriteLine("Error: Torrent hash not found.");
+            return null;
+        }
+
+        try
+        {
+            var fileList = JsonSerializer.Deserialize<List<TorrentFileInfo>>(response.Item2, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+
+            return fileList ?? new List<TorrentFileInfo>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error parsing torrent contents JSON: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<List<TorrentFileInfo>?> GetTorrentContentsAsync(string hash, List<int>? indexes = null)
+    {
+        if (string.IsNullOrEmpty(hash))
+        {
+            throw new ArgumentException("Torrent hash cannot be null or empty", nameof(hash));
+        }
+
+        var requestUrl = $"{BaseUrl}/files?hash={Uri.EscapeDataString(hash)}";
+
+        if (indexes is { Count: > 0 })
+        {
+            requestUrl += $"&indexes={string.Join("|", indexes)}";
+        }
+
+        var response = await netUtils.GetAsync(requestUrl);
+
+        if (response.Item1 == HttpStatusCode.NotFound)
+        {
+            Console.WriteLine("Error: Torrent hash not found.");
+            return null;
+        }
+
+        try
+        {
+            var fileList = JsonSerializer.Deserialize<List<TorrentFileInfo>>(response.Item2, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+
+            return fileList ?? new List<TorrentFileInfo>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error parsing torrent contents JSON: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<bool> RenameTorrentFileAsync(string hash, string oldPath, string newPath)
+    {
+        if (string.IsNullOrWhiteSpace(hash))
+        {
+            throw new ArgumentException("Torrent hash cannot be null or empty", nameof(hash));
+        }
+
+        if (string.IsNullOrWhiteSpace(oldPath))
+        {
+            throw new ArgumentException("Old path cannot be null or empty", nameof(oldPath));
+        }
+
+        if (string.IsNullOrWhiteSpace(newPath))
+        {
+            throw new ArgumentException("New path cannot be null or empty", nameof(newPath));
+        }
+
+        var parameters = new Dictionary<string, string>
+        {
+            { "hash", hash },
+            { "oldPath", oldPath },
+            { "newPath", newPath }
+        };
+
+        var response = await netUtils.PostAsync($"{BaseUrl}/renameFile", parameters);
+
+        switch (response.Item1)
+        {
+            case HttpStatusCode.OK :
+                return true;
+            case HttpStatusCode.BadRequest :
+                Console.WriteLine("Error: Missing newPath parameter.");
+                return false;
+            case HttpStatusCode.Conflict :
+                Console.WriteLine("Error: Invalid newPath, oldPath, or newPath is already in use.");
+                return false;
+            default :
+                Console.WriteLine($"Unexpected error: {response.Item1}");
+                return false;
+        }
+    }
+
+    public async Task<bool> RenameTorrentFolderAsync(string hash, string oldPath, string newPath)
+    {
+        if (string.IsNullOrWhiteSpace(hash))
+        {
+            throw new ArgumentException("Torrent hash cannot be null or empty", nameof(hash));
+        }
+
+        if (string.IsNullOrWhiteSpace(oldPath))
+        {
+            throw new ArgumentException("Old path cannot be null or empty", nameof(oldPath));
+        }
+
+        if (string.IsNullOrWhiteSpace(newPath))
+        {
+            throw new ArgumentException("New path cannot be null or empty", nameof(newPath));
+        }
+
+        var parameters = new Dictionary<string, string>
+        {
+            { "hash", hash },
+            { "oldPath", oldPath },
+            { "newPath", newPath }
+        };
+
+        var response = await netUtils.PostAsync($"{BaseUrl}/renameFolder", parameters);
+
+        switch (response.Item1)
+        {
+            case HttpStatusCode.OK :
+                return true;
+            case HttpStatusCode.BadRequest :
+                Console.WriteLine("Error: Missing newPath parameter.");
+                return false;
+            case HttpStatusCode.Conflict :
+                Console.WriteLine("Error: Invalid newPath, oldPath, or newPath is already in use.");
+                return false;
+            default :
+                Console.WriteLine($"Unexpected error: {response.Item1}");
+                return false;
+        }
+    }
 }
