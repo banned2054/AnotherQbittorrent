@@ -1,8 +1,7 @@
-﻿using AnotherQbittorrent.Models.Enums;
+using AnotherQbittorrent.Models.Enums;
 using AnotherQbittorrent.Models.Requests;
 using AnotherQbittorrent.Models.Torrent;
 using AnotherQbittorrent.Utils;
-using System.Globalization;
 using System.Net;
 using System.Text.Json;
 
@@ -21,7 +20,7 @@ public class TorrentService(NetUtils netUtils)
                                               int               offset   = 0,
                                               List<string>?     hashList = null)
     {
-        var requestPara = new TorrentListRequests
+        var requestPara = new GetTorrentInfoListRequest
         {
             Filter   = filter,
             Category = category,
@@ -42,7 +41,21 @@ public class TorrentService(NetUtils netUtils)
         return StringToTorrentInfoList(response.Item2);
     }
 
-    public async Task<List<TorrentInfo>?> AsyncGetTorrentInfos(EnumTorrentFilter filter   = EnumTorrentFilter.All,
+    public List<TorrentInfo>? GetTorrentInfos(GetTorrentInfoListRequest request)
+    {
+        var requestPara = request.ToString();
+
+        if (requestPara != string.Empty)
+        {
+            requestPara = "?" + requestPara;
+        }
+
+        var response = netUtils.Get($"{BaseUrl}/info{requestPara}");
+        return StringToTorrentInfoList(response.Item2);
+    }
+
+
+    public async Task<List<TorrentInfo>?> GetTorrentInfosAsync(EnumTorrentFilter filter   = EnumTorrentFilter.All,
                                                                string?           category = null,
                                                                string?           tag      = null,
                                                                string?           sort     = null,
@@ -51,7 +64,7 @@ public class TorrentService(NetUtils netUtils)
                                                                int               offset   = 0,
                                                                List<string>?     hashList = null)
     {
-        var requestPara = new TorrentListRequests
+        var requestPara = new GetTorrentInfoListRequest
         {
             Filter   = filter,
             Category = category,
@@ -62,6 +75,19 @@ public class TorrentService(NetUtils netUtils)
             Offset   = offset,
             HashList = hashList
         }.ToString();
+
+        if (requestPara != string.Empty)
+        {
+            requestPara = "?" + requestPara;
+        }
+
+        var response = await netUtils.GetAsync($"{BaseUrl}/info{requestPara}");
+        return StringToTorrentInfoList(response.Item2);
+    }
+
+    public async Task<List<TorrentInfo>?> GetTorrentInfosAsync(GetTorrentInfoListRequest request)
+    {
+        var requestPara = request.ToString();
 
         if (requestPara != string.Empty)
         {
@@ -106,7 +132,7 @@ public class TorrentService(NetUtils netUtils)
         DeleteTorrent(hash, deleteFile);
     }
 
-    public async Task AsyncDeleteTorrent(string hash, bool deleteFile = false)
+    public async Task DeleteTorrentAsync(string hash, bool deleteFile = false)
     {
         var parameters = new Dictionary<string, string>
         {
@@ -117,15 +143,20 @@ public class TorrentService(NetUtils netUtils)
         await netUtils.PostAsync($"{BaseUrl}/delete", parameters);
     }
 
-    public async Task AsyncDeleteTorrent(List<string> hashList, bool deleteFile = false)
+    public async Task DeleteTorrentAsync(List<string> hashList, bool deleteFile = false)
     {
         var hash = string.Join('|', hashList.ToArray());
-        await AsyncDeleteTorrent(hash, deleteFile);
+        await DeleteTorrentAsync(hash, deleteFile);
     }
 
     public void ResumeTorrent(string hash)
     {
-        netUtils.Get($"{BaseUrl}/resume?hashes={hash}");
+        var parameters = new Dictionary<string, string>
+        {
+            { "hashes", hash },
+        };
+
+        netUtils.Post($"{BaseUrl}/resume", parameters);
     }
 
     public void ResumeTorrent(List<string> hashList)
@@ -134,20 +165,30 @@ public class TorrentService(NetUtils netUtils)
         ResumeTorrent(hash);
     }
 
-    public async Task AsyncResumeTorrent(string hash)
+    public async Task ResumeTorrentAsync(string hash)
     {
-        await netUtils.GetAsync($"{BaseUrl}/resume?hashes={hash}");
+        var parameters = new Dictionary<string, string>
+        {
+            { "hashes", hash },
+        };
+
+        await netUtils.PostAsync($"{BaseUrl}/resume", parameters);
     }
 
-    public async Task AsyncResumeTorrent(List<string> hashList)
+    public async Task ResumeTorrentAsync(List<string> hashList)
     {
         var hash = string.Join('|', hashList.ToArray());
-        await AsyncResumeTorrent(hash);
+        await ResumeTorrentAsync(hash);
     }
 
     public void ReannounceTorrent(string hash)
     {
-        netUtils.Get($"{BaseUrl}/reannounce?hashes={hash}");
+        var parameters = new Dictionary<string, string>
+        {
+            { "hashes", hash },
+        };
+
+        netUtils.Post($"{BaseUrl}/reannounce", parameters);
     }
 
     public void ReannounceTorrent(List<string> hashList)
@@ -156,20 +197,30 @@ public class TorrentService(NetUtils netUtils)
         ReannounceTorrent(hash);
     }
 
-    public async Task AsyncReannounceTorrent(string hash)
+    public async Task ReannounceTorrentAsync(string hash)
     {
-        await netUtils.GetAsync($"{BaseUrl}/reannounce?hashes={hash}");
+        var parameters = new Dictionary<string, string>
+        {
+            { "hashes", hash },
+        };
+
+        await netUtils.PostAsync($"{BaseUrl}/reannounce", parameters);
     }
 
-    public async Task AsyncReannounceTorrent(List<string> hashList)
+    public async Task ReannounceTorrentAsync(List<string> hashList)
     {
         var hash = string.Join('|', hashList.ToArray());
-        await AsyncReannounceTorrent(hash);
+        await ReannounceTorrentAsync(hash);
     }
 
     public void RecheckTorrent(string hash)
     {
-        netUtils.Get($"{BaseUrl}/recheck?hashes={hash}");
+        var parameters = new Dictionary<string, string>
+        {
+            { "hashes", hash },
+        };
+
+        netUtils.Post($"{BaseUrl}/recheck", parameters);
     }
 
     public void RecheckTorrent(List<string> hashList)
@@ -178,15 +229,19 @@ public class TorrentService(NetUtils netUtils)
         RecheckTorrent(hash);
     }
 
-    public async Task AsyncRecheckTorrent(string hash)
+    public async Task RecheckTorrentAsync(string hash)
     {
-        await netUtils.GetAsync($"{BaseUrl}/recheck?hashes={hash}");
+        var parameters = new Dictionary<string, string>
+        {
+            { "hashes", hash },
+        };
+        await netUtils.PostAsync($"{BaseUrl}/recheck", parameters);
     }
 
-    public async Task AsyncRecheckTorrent(List<string> hashList)
+    public async Task RecheckTorrentAsync(List<string> hashList)
     {
         var hash = string.Join('|', hashList.ToArray());
-        await AsyncRecheckTorrent(hash);
+        await RecheckTorrentAsync(hash);
     }
 
     public void PauseTorrent(string hash)
@@ -200,15 +255,15 @@ public class TorrentService(NetUtils netUtils)
         PauseTorrent(hash);
     }
 
-    public async Task AsyncPauseTorrent(string hash)
+    public async Task PauseTorrentAsync(string hash)
     {
         await netUtils.GetAsync($"{BaseUrl}/pause?hashes={hash}");
     }
 
-    public async Task AsyncPauseTorrent(List<string> hashList)
+    public async Task PauseTorrentAsync(List<string> hashList)
     {
         var hash = string.Join('|', hashList.ToArray());
-        await AsyncPauseTorrent(hash);
+        await PauseTorrentAsync(hash);
     }
 
     public List<TrackerInfo> GetTrackerList(string hash)
@@ -225,54 +280,16 @@ public class TorrentService(NetUtils netUtils)
     /// <summary>
     /// 添加种子文件或 URL
     /// </summary>
-    public async Task<string> AddTorrentAsync(
-        List<string>? filePaths          = null,
-        List<string>? urls               = null,
-        string?       savePath           = "/download",
-        string?       category           = null,
-        string?       tags               = null,
-        bool?         skipChecking       = null,
-        bool?         paused             = null,
-        bool?         rootFolder         = null,
-        string?       rename             = null,
-        int?          upLimit            = null,
-        int?          dlLimit            = null,
-        float?        ratioLimit         = null,
-        int?          seedingTimeLimit   = null,
-        bool?         autoTmm            = null,
-        bool?         sequentialDownload = null,
-        bool?         firstLastPiecePrio = null)
+    public async Task<string> AddTorrentAsync(AddTorrentRequest request)
     {
-        var parameters = new Dictionary<string, string>();
+        var parameters = request.ToDictionary();
 
-        if (urls is { Count: > 0 })
+        if (request.FilePaths is { Count: > 0 })
         {
-            parameters["urls"] = string.Join("\n", urls);
-        }
-
-        if (!string.IsNullOrEmpty(savePath)) parameters["savepath"] = savePath;
-        if (!string.IsNullOrEmpty(category)) parameters["category"] = category;
-        if (!string.IsNullOrEmpty(tags)) parameters["tags"] = tags;
-        if (skipChecking.HasValue) parameters["skip_checking"] = skipChecking.Value.ToString().ToLower();
-        if (paused.HasValue) parameters["paused"] = paused.Value.ToString().ToLower();
-        if (rootFolder.HasValue) parameters["root_folder"] = rootFolder.Value.ToString().ToLower();
-        if (!string.IsNullOrEmpty(rename)) parameters["rename"] = rename;
-        if (upLimit.HasValue) parameters["upLimit"] = upLimit.Value.ToString();
-        if (dlLimit.HasValue) parameters["dlLimit"] = dlLimit.Value.ToString();
-        if (ratioLimit.HasValue) parameters["ratioLimit"] = ratioLimit.Value.ToString(CultureInfo.InvariantCulture);
-        if (seedingTimeLimit.HasValue) parameters["seedingTimeLimit"] = seedingTimeLimit.Value.ToString();
-        if (autoTmm.HasValue) parameters["autoTMM"] = autoTmm.Value.ToString().ToLower();
-        if (sequentialDownload.HasValue)
-            parameters["sequentialDownload"] = sequentialDownload.Value.ToString().ToLower();
-        if (firstLastPiecePrio.HasValue)
-            parameters["firstLastPiecePrio"] = firstLastPiecePrio.Value.ToString().ToLower();
-
-        if (filePaths is { Count: > 0 })
-        {
-            var result = await netUtils.PostWithFilesAsync($"{BaseUrl}/add", parameters, filePaths);
+            var result = await netUtils.PostWithFilesAsync($"{BaseUrl}/add", parameters, request.FilePaths);
             return result.Item2;
         }
-        else if (urls is { Count: > 0 })
+        else if (request.Urls is { Count: > 0 })
         {
             var result = await netUtils.PostAsync($"{BaseUrl}/add", parameters);
             return result.Item2;
@@ -281,5 +298,47 @@ public class TorrentService(NetUtils netUtils)
         {
             return "No torrent file or URL provided.";
         }
+    }
+
+    // 兼容旧版本，直接传入参数
+    public async Task<string> AddTorrentAsync(
+        List<string>? filePaths              = null,
+        List<string>? urls                   = null,
+        string?       savePath               = "/download",
+        string?       category               = null,
+        string?       tags                   = null,
+        bool?         skipChecking           = null,
+        bool?         paused                 = null,
+        bool?         rootFolder             = null,
+        string?       rename                 = null,
+        int?          uploadLimit            = null,
+        int?          downloadLimit          = null,
+        float?        ratioLimit             = null,
+        int?          seedingTimeLimit       = null,
+        bool?         autoTmm                = null,
+        bool?         sequentialDownload     = null,
+        bool?         firstLastPiecePriority = null)
+    {
+        var request = new AddTorrentRequest
+        {
+            FilePaths              = filePaths,
+            Urls                   = urls,
+            SavePath               = savePath,
+            Category               = category,
+            Tags                   = tags,
+            SkipChecking           = skipChecking,
+            Paused                 = paused,
+            RootFolder             = rootFolder,
+            Rename                 = rename,
+            UploadLimit            = uploadLimit,
+            DownloadLimit          = downloadLimit,
+            RatioLimit             = ratioLimit,
+            SeedingTimeLimit       = seedingTimeLimit,
+            AutoTmm                = autoTmm,
+            SequentialDownload     = sequentialDownload,
+            FirstLastPiecePriority = firstLastPiecePriority
+        };
+
+        return await AddTorrentAsync(request);
     }
 }

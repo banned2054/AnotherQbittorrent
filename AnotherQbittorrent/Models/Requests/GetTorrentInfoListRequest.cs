@@ -1,8 +1,8 @@
-﻿using AnotherQbittorrent.Models.Enums;
+using AnotherQbittorrent.Models.Enums;
 
 namespace AnotherQbittorrent.Models.Requests;
 
-internal class TorrentListRequests
+public class GetTorrentInfoListRequest
 {
     public EnumTorrentFilter Filter   { get; set; }
     public string?           Category { get; set; }
