@@ -8,37 +8,37 @@ public class ApplicationService(NetUtils netUtils)
 
     public string GetApiVersion()
     {
-        var result = netUtils.Fetch($"{BaseUrl}/webapiVersion");
+        var result = netUtils.Get($"{BaseUrl}/webapiVersion");
         return result.Item2;
     }
 
     public string GetVersion()
     {
-        var result = netUtils.Fetch($"{BaseUrl}/version");
+        var result = netUtils.Get($"{BaseUrl}/version");
         return result.Item2;
     }
 
     public string GetBuildInfo()
     {
-        var result = netUtils.Fetch($"{BaseUrl}/buildInfo");
+        var result = netUtils.Get($"{BaseUrl}/buildInfo");
         return result.Item2;
     }
 
     public async Task<string> AsyncGetApiVersion()
     {
-        var result = await netUtils.AsyncFetch($"{BaseUrl}/webapiVersion");
+        var result = await netUtils.GetAsync($"{BaseUrl}/webapiVersion");
         return result.Item2;
     }
 
     public async Task<string> AsyncGetVersion()
     {
-        var result = await netUtils.AsyncFetch($"{BaseUrl}/version");
+        var result = await netUtils.GetAsync($"{BaseUrl}/version");
         return result.Item2;
     }
 
     public async Task<string> AsyncGetBuildInfo()
     {
-        var result = await netUtils.AsyncFetch($"{BaseUrl}/buildInfo");
+        var result = await netUtils.GetAsync($"{BaseUrl}/buildInfo");
         return result.Item2;
     }
 }

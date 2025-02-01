@@ -5,27 +5,31 @@ namespace AnotherQbittorrent.Test;
 
 public class TorrentUnitTest
 {
-    public class TestConfig
-    {
-        public string BaseUrl  { get; set; } = string.Empty;
-        public string Username { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-    }
-
     private QBittorrentClient _client;
 
     [SetUp]
     public void SetUp()
     {
         // 从 JSON 文件中读取配置
-        var config = JsonSerializer.Deserialize<TestConfig>(File.ReadAllText("test-config.json"));
-        _client = new QBittorrentClient(config.BaseUrl, config.Username, config.Password);
+        _client = new QBittorrentClient(StaticConfig.BaseUrl, StaticConfig.Username, StaticConfig.Password);
     }
 
     [Test]
     public void TestGetTorrentList()
     {
         var torrentList = _client.Torrent.GetTorrentInfos(EnumTorrentFilter.All, null, "tv");
+        if (torrentList != null)
+            foreach (var torrent in torrentList)
+            {
+                Console.WriteLine(JsonSerializer.Serialize(torrent));
+            }
+
         Assert.Pass();
+    }
+
+    [Test]
+    public void TestDeleteTorrent()
+    {
+        _client.Torrent.DeleteTorrent("b963306bd91ff97492079b5510e91a111757322f");
     }
 }

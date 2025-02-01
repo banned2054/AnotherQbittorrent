@@ -1,9 +1,9 @@
-﻿using System.ComponentModel;
-using System.Net;
-using AnotherQbittorrent.Models.Enums;
+﻿using AnotherQbittorrent.Models.Enums;
 using AnotherQbittorrent.Models.Requests;
 using AnotherQbittorrent.Models.Torrent;
 using AnotherQbittorrent.Utils;
+using System.Globalization;
+using System.Net;
 using System.Text.Json;
 
 namespace AnotherQbittorrent.Services;
@@ -38,7 +38,7 @@ public class TorrentService(NetUtils netUtils)
             requestPara = "?" + requestPara;
         }
 
-        var response = netUtils.Fetch($"{BaseUrl}/info{requestPara}");
+        var response = netUtils.Get($"{BaseUrl}/info{requestPara}");
         return StringToTorrentInfoList(response.Item2);
     }
 
@@ -68,7 +68,7 @@ public class TorrentService(NetUtils netUtils)
             requestPara = "?" + requestPara;
         }
 
-        var response = await netUtils.AsyncFetch($"{BaseUrl}/info{requestPara}");
+        var response = await netUtils.GetAsync($"{BaseUrl}/info{requestPara}");
         return StringToTorrentInfoList(response.Item2);
     }
 
@@ -91,7 +91,13 @@ public class TorrentService(NetUtils netUtils)
 
     public void DeleteTorrent(string hash, bool deleteFile = false)
     {
-        netUtils.Fetch($"{BaseUrl}/delete?hashes={hash}&deleteFiles={deleteFile.ToString().ToLower()}");
+        var parameters = new Dictionary<string, string>
+        {
+            { "hashes", hash },
+            { "deleteFiles", deleteFile.ToString().ToLower() }
+        };
+
+        netUtils.Post($"{BaseUrl}/delete", parameters);
     }
 
     public void DeleteTorrent(List<string> hashList, bool deleteFile = false)
@@ -102,7 +108,13 @@ public class TorrentService(NetUtils netUtils)
 
     public async Task AsyncDeleteTorrent(string hash, bool deleteFile = false)
     {
-        await netUtils.AsyncFetch($"{BaseUrl}/delete?hashes={hash}&deleteFiles={deleteFile.ToString().ToLower()}");
+        var parameters = new Dictionary<string, string>
+        {
+            { "hashes", hash },
+            { "deleteFiles", deleteFile.ToString().ToLower() }
+        };
+
+        await netUtils.PostAsync($"{BaseUrl}/delete", parameters);
     }
 
     public async Task AsyncDeleteTorrent(List<string> hashList, bool deleteFile = false)
@@ -113,7 +125,7 @@ public class TorrentService(NetUtils netUtils)
 
     public void ResumeTorrent(string hash)
     {
-        netUtils.Fetch($"{BaseUrl}/resume?hashes={hash}");
+        netUtils.Get($"{BaseUrl}/resume?hashes={hash}");
     }
 
     public void ResumeTorrent(List<string> hashList)
@@ -124,7 +136,7 @@ public class TorrentService(NetUtils netUtils)
 
     public async Task AsyncResumeTorrent(string hash)
     {
-        await netUtils.AsyncFetch($"{BaseUrl}/resume?hashes={hash}");
+        await netUtils.GetAsync($"{BaseUrl}/resume?hashes={hash}");
     }
 
     public async Task AsyncResumeTorrent(List<string> hashList)
@@ -135,7 +147,7 @@ public class TorrentService(NetUtils netUtils)
 
     public void ReannounceTorrent(string hash)
     {
-        netUtils.Fetch($"{BaseUrl}/reannounce?hashes={hash}");
+        netUtils.Get($"{BaseUrl}/reannounce?hashes={hash}");
     }
 
     public void ReannounceTorrent(List<string> hashList)
@@ -146,7 +158,7 @@ public class TorrentService(NetUtils netUtils)
 
     public async Task AsyncReannounceTorrent(string hash)
     {
-        await netUtils.AsyncFetch($"{BaseUrl}/reannounce?hashes={hash}");
+        await netUtils.GetAsync($"{BaseUrl}/reannounce?hashes={hash}");
     }
 
     public async Task AsyncReannounceTorrent(List<string> hashList)
@@ -157,7 +169,7 @@ public class TorrentService(NetUtils netUtils)
 
     public void RecheckTorrent(string hash)
     {
-        netUtils.Fetch($"{BaseUrl}/recheck?hashes={hash}");
+        netUtils.Get($"{BaseUrl}/recheck?hashes={hash}");
     }
 
     public void RecheckTorrent(List<string> hashList)
@@ -168,7 +180,7 @@ public class TorrentService(NetUtils netUtils)
 
     public async Task AsyncRecheckTorrent(string hash)
     {
-        await netUtils.AsyncFetch($"{BaseUrl}/recheck?hashes={hash}");
+        await netUtils.GetAsync($"{BaseUrl}/recheck?hashes={hash}");
     }
 
     public async Task AsyncRecheckTorrent(List<string> hashList)
@@ -179,7 +191,7 @@ public class TorrentService(NetUtils netUtils)
 
     public void PauseTorrent(string hash)
     {
-        netUtils.Fetch($"{BaseUrl}/pause?hashes={hash}");
+        netUtils.Get($"{BaseUrl}/pause?hashes={hash}");
     }
 
     public void PauseTorrent(List<string> hashList)
@@ -190,7 +202,7 @@ public class TorrentService(NetUtils netUtils)
 
     public async Task AsyncPauseTorrent(string hash)
     {
-        await netUtils.AsyncFetch($"{BaseUrl}/pause?hashes={hash}");
+        await netUtils.GetAsync($"{BaseUrl}/pause?hashes={hash}");
     }
 
     public async Task AsyncPauseTorrent(List<string> hashList)
@@ -201,12 +213,73 @@ public class TorrentService(NetUtils netUtils)
 
     public List<TrackerInfo> GetTrackerList(string hash)
     {
-        var response = netUtils.Fetch($"{BaseUrl}/trackers?hash={hash}");
+        var response = netUtils.Get($"{BaseUrl}/trackers?hash={hash}");
         if (response.Item1 == HttpStatusCode.NotFound)
         {
             return new();
         }
 
         return new();
+    }
+
+    /// <summary>
+    /// 添加种子文件或 URL
+    /// </summary>
+    public async Task<string> AddTorrentAsync(
+        List<string>? filePaths          = null,
+        List<string>? urls               = null,
+        string?       savePath           = "/download",
+        string?       category           = null,
+        string?       tags               = null,
+        bool?         skipChecking       = null,
+        bool?         paused             = null,
+        bool?         rootFolder         = null,
+        string?       rename             = null,
+        int?          upLimit            = null,
+        int?          dlLimit            = null,
+        float?        ratioLimit         = null,
+        int?          seedingTimeLimit   = null,
+        bool?         autoTmm            = null,
+        bool?         sequentialDownload = null,
+        bool?         firstLastPiecePrio = null)
+    {
+        var parameters = new Dictionary<string, string>();
+
+        if (urls is { Count: > 0 })
+        {
+            parameters["urls"] = string.Join("\n", urls);
+        }
+
+        if (!string.IsNullOrEmpty(savePath)) parameters["savepath"] = savePath;
+        if (!string.IsNullOrEmpty(category)) parameters["category"] = category;
+        if (!string.IsNullOrEmpty(tags)) parameters["tags"] = tags;
+        if (skipChecking.HasValue) parameters["skip_checking"] = skipChecking.Value.ToString().ToLower();
+        if (paused.HasValue) parameters["paused"] = paused.Value.ToString().ToLower();
+        if (rootFolder.HasValue) parameters["root_folder"] = rootFolder.Value.ToString().ToLower();
+        if (!string.IsNullOrEmpty(rename)) parameters["rename"] = rename;
+        if (upLimit.HasValue) parameters["upLimit"] = upLimit.Value.ToString();
+        if (dlLimit.HasValue) parameters["dlLimit"] = dlLimit.Value.ToString();
+        if (ratioLimit.HasValue) parameters["ratioLimit"] = ratioLimit.Value.ToString(CultureInfo.InvariantCulture);
+        if (seedingTimeLimit.HasValue) parameters["seedingTimeLimit"] = seedingTimeLimit.Value.ToString();
+        if (autoTmm.HasValue) parameters["autoTMM"] = autoTmm.Value.ToString().ToLower();
+        if (sequentialDownload.HasValue)
+            parameters["sequentialDownload"] = sequentialDownload.Value.ToString().ToLower();
+        if (firstLastPiecePrio.HasValue)
+            parameters["firstLastPiecePrio"] = firstLastPiecePrio.Value.ToString().ToLower();
+
+        if (filePaths is { Count: > 0 })
+        {
+            var result = await netUtils.PostWithFilesAsync($"{BaseUrl}/add", parameters, filePaths);
+            return result.Item2;
+        }
+        else if (urls is { Count: > 0 })
+        {
+            var result = await netUtils.PostAsync($"{BaseUrl}/add", parameters);
+            return result.Item2;
+        }
+        else
+        {
+            return "No torrent file or URL provided.";
+        }
     }
 }

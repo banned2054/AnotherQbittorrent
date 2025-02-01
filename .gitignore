@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 AnotherQbittorrent.Test/test-config.json
+AnotherQbittorrent.Test/StaticConfig.cs
