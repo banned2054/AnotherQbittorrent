@@ -79,7 +79,7 @@ public class NetUtils
         {
             CookieContainer = _cookieContainer
         };
-        request.AddHeader("Content-Type", "multipart/form-data");
+        request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
 
         foreach (var param in parameters)
         {
