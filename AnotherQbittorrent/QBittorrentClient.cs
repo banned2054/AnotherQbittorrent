@@ -1,4 +1,4 @@
-﻿using AnotherQbittorrent.Services;
+using AnotherQbittorrent.Services;
 using AnotherQbittorrent.Utils;
 
 namespace AnotherQbittorrent;
