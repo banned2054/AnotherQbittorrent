@@ -24,19 +24,19 @@ public class ApplicationService(NetUtils netUtils)
         return result.Item2;
     }
 
-    public async Task<string> AsyncGetApiVersion()
+    public async Task<string> GetApiVersionAsync()
     {
         var result = await netUtils.GetAsync($"{BaseUrl}/webapiVersion");
         return result.Item2;
     }
 
-    public async Task<string> AsyncGetVersion()
+    public async Task<string> GetVersionAsync()
     {
         var result = await netUtils.GetAsync($"{BaseUrl}/version");
         return result.Item2;
     }
 
-    public async Task<string> AsyncGetBuildInfo()
+    public async Task<string> GetBuildInfoAsync()
     {
         var result = await netUtils.GetAsync($"{BaseUrl}/buildInfo");
         return result.Item2;
