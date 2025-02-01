@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 AnotherQbittorrent.Test/test-config.json
 AnotherQbittorrent.Test/StaticConfig.cs
+publish.ps1
