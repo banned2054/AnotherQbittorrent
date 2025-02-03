@@ -51,4 +51,14 @@ public class TorrentUnitTest
                                               ratioLimit : -1
                                              );
     }
+
+    [Test]
+    public void GetTorrentTrackers()
+    {
+        var trackers = _client.Torrent.GetTrackerList("77de2b4c96e59c23422085cfd1dbad10d440abd7");
+        foreach (var tracker in trackers)
+        {
+            Console.WriteLine(JsonSerializer.Serialize(tracker));
+        }
+    }
 }

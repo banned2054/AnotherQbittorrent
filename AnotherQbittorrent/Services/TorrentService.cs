@@ -268,13 +268,26 @@ public class TorrentService(NetUtils netUtils)
 
     public List<TrackerInfo> GetTrackerList(string hash)
     {
-        var response = netUtils.Get($"{BaseUrl}/trackers?hash={hash}");
-        if (response.Item1 == HttpStatusCode.NotFound)
+        var parameters = new Dictionary<string, string>
         {
-            return new();
+            { "hash", hash },
+        };
+        var response = netUtils.Post($"{BaseUrl}/trackers", parameters);
+        if (response.Item1 == HttpStatusCode.NotFound) return new List<TrackerInfo>();
+        try
+        {
+            var trackers = JsonSerializer.Deserialize<List<TrackerInfo>>(response.Item2);
+            if (trackers != null)
+            {
+                return trackers;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"JSON 解析失败: {ex.Message}");
         }
 
-        return new();
+        return new List<TrackerInfo>();
     }
 
     /// <summary>
