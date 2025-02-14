@@ -44,7 +44,7 @@ public class GetTorrentInfoListRequest
             parameters.Add($"limit={Limit}");
         }
 
-        if (Offset >= 0)
+        if (Offset > 0)
         {
             parameters.Add($"offset={Offset}");
         }

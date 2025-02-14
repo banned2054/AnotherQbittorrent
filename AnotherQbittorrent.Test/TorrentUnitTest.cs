@@ -61,4 +61,43 @@ public class TorrentUnitTest
             Console.WriteLine(JsonSerializer.Serialize(tracker));
         }
     }
+
+    [Test]
+    public async Task SelfCheckAsync()
+    {
+        const string hash = "6cf662d0310a8dd42e4648366dc32b3a260ebf38";
+        await _client.Torrent.RecheckTorrentAsync(hash);
+
+        await Task.Delay(5000); // 先等 5 秒，避免立即查询
+
+        var hashList = new List<string> { hash };
+        var infoList = await _client.Torrent.GetTorrentInfosAsync(hashList : hashList);
+        if (infoList == null || infoList.Count == 0) return;
+
+        var info = infoList[0];
+
+        int       retryCount = 0;
+        const int maxRetries = 30; // 最多 60 秒超时退出
+
+        while (info.State == EnumTorrentState.CheckingDownload ||
+               info.State == EnumTorrentState.CheckingUpload)
+        {
+            Console.WriteLine($"状态未完成: {info.State}, 当前时间: {DateTime.Now}");
+
+            if (++retryCount >= maxRetries)
+            {
+                Console.WriteLine("检测超时，强制退出循环。");
+                break;
+            }
+
+            await Task.Delay(2000); // 改为 2 秒轮询，提升更新频率
+
+            infoList = await _client.Torrent.GetTorrentInfosAsync(hashList : hashList);
+            if (infoList == null || infoList.Count == 0) continue;
+
+            info = infoList[0];
+        }
+
+        Console.WriteLine("状态检查完成！");
+    }
 }
