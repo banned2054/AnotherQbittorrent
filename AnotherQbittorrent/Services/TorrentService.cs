@@ -20,40 +20,47 @@ public class TorrentService(NetUtils netUtils)
                                               int               offset   = 0,
                                               List<string>?     hashList = null)
     {
-        var requestPara = new GetTorrentInfoListRequest
+        var parameters = new Dictionary<string, string>
         {
-            Filter   = filter,
-            Category = category,
-            Tag      = tag,
-            Sort     = sort,
-            Reverse  = reverse,
-            Limit    = limit,
-            Offset   = offset,
-            HashList = hashList
-        }.ToString();
+            { "filter", filter.ToString().ToLower() }
+        };
 
-        if (requestPara != string.Empty)
+        if (!string.IsNullOrEmpty(category)) parameters.Add("category", category);
+        if (!string.IsNullOrEmpty(tag)) parameters.Add("tag", tag);
+        if (!string.IsNullOrEmpty(sort)) parameters.Add("sort", sort);
+        if (reverse) parameters.Add("reverse", "true");
+        if (limit  > 0) parameters.Add("limit", limit.ToString());
+        if (offset > 0) parameters.Add("offset", offset.ToString());
+        if (hashList is { Count: > 0 })
         {
-            requestPara = "?" + requestPara;
+            parameters.Add("hashes", string.Join("|", hashList)); // 确保 `hashes` 以 `|` 连接
         }
 
-        var response = netUtils.Get($"{BaseUrl}/info{requestPara}");
-        return StringToTorrentInfoList(response.Item2);
+        var response = netUtils.Post($"{BaseUrl}/info", parameters);
+        return response.Item1 == HttpStatusCode.OK ? StringToTorrentInfoList(response.Item2) : null;
     }
 
     public List<TorrentInfo>? GetTorrentInfos(GetTorrentInfoListRequest request)
     {
-        var requestPara = request.ToString();
-
-        if (requestPara != string.Empty)
+        var parameters = new Dictionary<string, string>
         {
-            requestPara = "?" + requestPara;
+            { "filter", request.Filter.ToString().ToLower() }
+        };
+
+        if (!string.IsNullOrEmpty(request.Category)) parameters.Add("category", request.Category);
+        if (!string.IsNullOrEmpty(request.Tag)) parameters.Add("tag", request.Tag);
+        if (!string.IsNullOrEmpty(request.Sort)) parameters.Add("sort", request.Sort);
+        if (request.Reverse) parameters.Add("reverse", "true");
+        if (request.Limit  > 0) parameters.Add("limit", request.Limit.ToString());
+        if (request.Offset > 0) parameters.Add("offset", request.Offset.ToString());
+        if (request.HashList is { Count: > 0 })
+        {
+            parameters.Add("hashes", string.Join("|", request.HashList));
         }
 
-        var response = netUtils.Get($"{BaseUrl}/info{requestPara}");
-        return StringToTorrentInfoList(response.Item2);
+        var response = netUtils.Post($"{BaseUrl}/info", parameters);
+        return response.Item1 == HttpStatusCode.OK ? StringToTorrentInfoList(response.Item2) : null;
     }
-
 
     public async Task<List<TorrentInfo>?> GetTorrentInfosAsync(EnumTorrentFilter filter   = EnumTorrentFilter.All,
                                                                string?           category = null,
@@ -64,39 +71,50 @@ public class TorrentService(NetUtils netUtils)
                                                                int               offset   = 0,
                                                                List<string>?     hashList = null)
     {
-        var requestPara = new GetTorrentInfoListRequest
+        var parameters = new Dictionary<string, string>
         {
-            Filter   = filter,
-            Category = category,
-            Tag      = tag,
-            Sort     = sort,
-            Reverse  = reverse,
-            Limit    = limit,
-            Offset   = offset,
-            HashList = hashList
-        }.ToString();
+            { "filter", filter.ToString().ToLower() }
+        };
 
-        if (requestPara != string.Empty)
+        if (!string.IsNullOrEmpty(category)) parameters.Add("category", category);
+        if (!string.IsNullOrEmpty(tag)) parameters.Add("tag", tag);
+        if (!string.IsNullOrEmpty(sort)) parameters.Add("sort", sort);
+        if (reverse) parameters.Add("reverse", "true");
+        if (limit  > 0) parameters.Add("limit", limit.ToString());
+        if (offset > 0) parameters.Add("offset", offset.ToString());
+        if (hashList is { Count: > 0 })
         {
-            requestPara = "?" + requestPara;
+            parameters.Add("hashes", string.Join("|", hashList));
         }
 
-        var response = await netUtils.GetAsync($"{BaseUrl}/info{requestPara}");
-        return StringToTorrentInfoList(response.Item2);
+        var response = await netUtils.PostAsync($"{BaseUrl}/info", parameters);
+
+        return response.Item1 == HttpStatusCode.NotFound ? null : StringToTorrentInfoList(response.Item2);
     }
 
     public async Task<List<TorrentInfo>?> GetTorrentInfosAsync(GetTorrentInfoListRequest request)
     {
-        var requestPara = request.ToString();
-
-        if (requestPara != string.Empty)
+        var parameters = new Dictionary<string, string>
         {
-            requestPara = "?" + requestPara;
+            { "filter", request.Filter.ToString().ToLower() }
+        };
+
+        if (!string.IsNullOrEmpty(request.Category)) parameters.Add("category", request.Category);
+        if (!string.IsNullOrEmpty(request.Tag)) parameters.Add("tag", request.Tag);
+        if (!string.IsNullOrEmpty(request.Sort)) parameters.Add("sort", request.Sort);
+        if (request.Reverse) parameters.Add("reverse", "true");
+        if (request.Limit  > 0) parameters.Add("limit", request.Limit.ToString());
+        if (request.Offset > 0) parameters.Add("offset", request.Offset.ToString());
+        if (request.HashList is { Count: > 0 })
+        {
+            parameters.Add("hashes", string.Join("|", request.HashList));
         }
 
-        var response = await netUtils.GetAsync($"{BaseUrl}/info{requestPara}");
-        return StringToTorrentInfoList(response.Item2);
+        var response = await netUtils.PostAsync($"{BaseUrl}/info", parameters);
+
+        return response.Item1 == HttpStatusCode.NotFound ? null : StringToTorrentInfoList(response.Item2);
     }
+
 
     public static List<TorrentInfo>? StringToTorrentInfoList(string jsonString)
     {
