@@ -40,7 +40,7 @@ public class TorrentService(NetUtils netUtils)
         return response.Item1 == HttpStatusCode.OK ? StringToTorrentInfoList(response.Item2) : new List<TorrentInfo>();
     }
 
-    public List<TorrentInfo>? GetTorrentInfos(GetTorrentInfoListRequest request)
+    public List<TorrentInfo> GetTorrentInfos(GetTorrentInfoListRequest request)
     {
         var parameters = new Dictionary<string, string>
         {
@@ -62,14 +62,14 @@ public class TorrentService(NetUtils netUtils)
         return response.Item1 == HttpStatusCode.OK ? StringToTorrentInfoList(response.Item2) : new List<TorrentInfo>();
     }
 
-    public async Task<List<TorrentInfo>?> GetTorrentInfosAsync(EnumTorrentFilter filter   = EnumTorrentFilter.All,
-                                                               string?           category = null,
-                                                               string?           tag      = null,
-                                                               string?           sort     = null,
-                                                               bool              reverse  = false,
-                                                               int               limit    = 0,
-                                                               int               offset   = 0,
-                                                               List<string>?     hashList = null)
+    public async Task<List<TorrentInfo>> GetTorrentInfosAsync(EnumTorrentFilter filter   = EnumTorrentFilter.All,
+                                                              string?           category = null,
+                                                              string?           tag      = null,
+                                                              string?           sort     = null,
+                                                              bool              reverse  = false,
+                                                              int               limit    = 0,
+                                                              int               offset   = 0,
+                                                              List<string>?     hashList = null)
     {
         var parameters = new Dictionary<string, string>
         {
@@ -91,7 +91,7 @@ public class TorrentService(NetUtils netUtils)
         return response.Item1 == HttpStatusCode.OK ? StringToTorrentInfoList(response.Item2) : new List<TorrentInfo>();
     }
 
-    public async Task<List<TorrentInfo>?> GetTorrentInfosAsync(GetTorrentInfoListRequest request)
+    public async Task<List<TorrentInfo>> GetTorrentInfosAsync(GetTorrentInfoListRequest request)
     {
         var parameters = new Dictionary<string, string>
         {
