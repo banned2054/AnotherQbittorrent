@@ -61,35 +61,4 @@ public class TorrentUnitTest
             Console.WriteLine(JsonSerializer.Serialize(tracker));
         }
     }
-
-    [Test]
-    public async Task SelfCheckAsync()
-    {
-        const string hash = "376226f716a98e2d0694f99791d8e14c9189998b";
-        await _client.Torrent.RecheckTorrentAsync(hash);
-
-        await Task.Delay(5000); // 先等 5 秒，避免立即查询
-
-        var hashList = new List<string> { hash };
-        var infoList = await _client.Torrent.GetTorrentInfosAsync(hashList : hashList);
-        if (infoList == null || infoList.Count == 0) return;
-
-        var info = infoList[0];
-
-        while (info.State is EnumTorrentState.CheckingDownload
-                          or EnumTorrentState.CheckingUpload
-                          or EnumTorrentState.CheckingResumeData)
-        {
-            Console.WriteLine($"状态未完成: {info.State}, 当前时间: {DateTime.Now}");
-
-            await Task.Delay(2000); // 改为 2 秒轮询，提升更新频率
-            info     = null;
-            infoList = await _client.Torrent.GetTorrentInfosAsync(hashList : hashList);
-            if (infoList == null || infoList.Count == 0) continue;
-
-            info = infoList[0];
-        }
-
-        Console.WriteLine("状态检查完成！");
-    }
 }

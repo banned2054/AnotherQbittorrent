@@ -11,14 +11,14 @@ public class TorrentService(NetUtils netUtils)
 {
     private const string BaseUrl = "/api/v2/torrents";
 
-    public List<TorrentInfo>? GetTorrentInfos(EnumTorrentFilter filter   = EnumTorrentFilter.All,
-                                              string?           category = null,
-                                              string?           tag      = null,
-                                              string?           sort     = null,
-                                              bool              reverse  = false,
-                                              int               limit    = 0,
-                                              int               offset   = 0,
-                                              List<string>?     hashList = null)
+    public List<TorrentInfo> GetTorrentInfos(EnumTorrentFilter filter   = EnumTorrentFilter.All,
+                                             string?           category = null,
+                                             string?           tag      = null,
+                                             string?           sort     = null,
+                                             bool              reverse  = false,
+                                             int               limit    = 0,
+                                             int               offset   = 0,
+                                             List<string>?     hashList = null)
     {
         var parameters = new Dictionary<string, string>
         {
@@ -37,7 +37,7 @@ public class TorrentService(NetUtils netUtils)
         }
 
         var response = netUtils.Post($"{BaseUrl}/info", parameters);
-        return response.Item1 == HttpStatusCode.OK ? StringToTorrentInfoList(response.Item2) : null;
+        return response.Item1 == HttpStatusCode.OK ? StringToTorrentInfoList(response.Item2) : new List<TorrentInfo>();
     }
 
     public List<TorrentInfo>? GetTorrentInfos(GetTorrentInfoListRequest request)
@@ -59,7 +59,7 @@ public class TorrentService(NetUtils netUtils)
         }
 
         var response = netUtils.Post($"{BaseUrl}/info", parameters);
-        return response.Item1 == HttpStatusCode.OK ? StringToTorrentInfoList(response.Item2) : null;
+        return response.Item1 == HttpStatusCode.OK ? StringToTorrentInfoList(response.Item2) : new List<TorrentInfo>();
     }
 
     public async Task<List<TorrentInfo>?> GetTorrentInfosAsync(EnumTorrentFilter filter   = EnumTorrentFilter.All,
@@ -88,8 +88,7 @@ public class TorrentService(NetUtils netUtils)
         }
 
         var response = await netUtils.PostAsync($"{BaseUrl}/info", parameters);
-
-        return response.Item1 == HttpStatusCode.NotFound ? null : StringToTorrentInfoList(response.Item2);
+        return response.Item1 == HttpStatusCode.OK ? StringToTorrentInfoList(response.Item2) : new List<TorrentInfo>();
     }
 
     public async Task<List<TorrentInfo>?> GetTorrentInfosAsync(GetTorrentInfoListRequest request)
@@ -111,26 +110,18 @@ public class TorrentService(NetUtils netUtils)
         }
 
         var response = await netUtils.PostAsync($"{BaseUrl}/info", parameters);
-
-        return response.Item1 == HttpStatusCode.NotFound ? null : StringToTorrentInfoList(response.Item2);
+        return response.Item1 == HttpStatusCode.OK ? StringToTorrentInfoList(response.Item2) : new List<TorrentInfo>();
     }
 
 
-    public static List<TorrentInfo>? StringToTorrentInfoList(string jsonString)
+    public static List<TorrentInfo> StringToTorrentInfoList(string jsonString)
     {
-        try
-        {
-            var options = new JsonSerializerOptions();
-            options.Converters.Add(new TorrentInfoConverter());
+        var options = new JsonSerializerOptions();
+        options.Converters.Add(new TorrentInfoConverter());
 
-            var torrentInfos = JsonSerializer.Deserialize<List<TorrentInfo>>(jsonString, options);
-            return torrentInfos;
-        }
-        catch (JsonException ex)
-        {
-            Console.WriteLine($"JSON 解析失败: {ex.Message}");
-            return null;
-        }
+        var torrentInfos = JsonSerializer.Deserialize<List<TorrentInfo>>(jsonString, options) ??
+                           new List<TorrentInfo>();
+        return torrentInfos;
     }
 
     public void DeleteTorrent(string hash, bool deleteFile = false)
