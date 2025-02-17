@@ -371,18 +371,21 @@ public class TorrentService(NetUtils netUtils)
             throw new ArgumentException("Torrent hash cannot be null or empty", nameof(hash));
         }
 
-        var requestUrl = $"{BaseUrl}/files?hash={Uri.EscapeDataString(hash)}";
+        const string requestUrl = $"{BaseUrl}/files";
+        var parameters = new Dictionary<string, string>
+        {
+            { "hash", hash }
+        };
 
         if (indexes is { Count: > 0 })
         {
-            requestUrl += $"&indexes={string.Join("|", indexes)}";
+            parameters["indexes"] = string.Join("|", indexes);
         }
 
-        var response = netUtils.Get(requestUrl);
+        var response = netUtils.Post(requestUrl, parameters);
 
         if (response.Item1 == HttpStatusCode.NotFound)
         {
-            Console.WriteLine("Error: Torrent hash not found.");
             return new List<TorrentFileInfo>();
         }
 
@@ -401,18 +404,21 @@ public class TorrentService(NetUtils netUtils)
             throw new ArgumentException("Torrent hash cannot be null or empty", nameof(hash));
         }
 
-        var requestUrl = $"{BaseUrl}/files?hash={Uri.EscapeDataString(hash)}";
+        const string requestUrl = $"{BaseUrl}/files";
+        var parameters = new Dictionary<string, string>
+        {
+            { "hash", hash }
+        };
 
         if (indexes is { Count: > 0 })
         {
-            requestUrl += $"&indexes={string.Join("|", indexes)}";
+            parameters["indexes"] = string.Join("|", indexes);
         }
 
-        var response = await netUtils.GetAsync(requestUrl);
+        var response = await netUtils.PostAsync(requestUrl, parameters);
 
         if (response.Item1 == HttpStatusCode.NotFound)
         {
-            Console.WriteLine("Error: Torrent hash not found.");
             return new List<TorrentFileInfo>();
         }
 
