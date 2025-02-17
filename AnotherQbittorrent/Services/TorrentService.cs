@@ -364,7 +364,7 @@ public class TorrentService(NetUtils netUtils)
         return await AddTorrentAsync(request);
     }
 
-    public List<TorrentFileInfo>? GetTorrentContents(string hash, List<int>? indexes = null)
+    public List<TorrentFileInfo> GetTorrentContents(string hash, List<int>? indexes = null)
     {
         if (string.IsNullOrEmpty(hash))
         {
@@ -383,26 +383,18 @@ public class TorrentService(NetUtils netUtils)
         if (response.Item1 == HttpStatusCode.NotFound)
         {
             Console.WriteLine("Error: Torrent hash not found.");
-            return null;
+            return new List<TorrentFileInfo>();
         }
 
-        try
+        var fileList = JsonSerializer.Deserialize<List<TorrentFileInfo>>(response.Item2, new JsonSerializerOptions
         {
-            var fileList = JsonSerializer.Deserialize<List<TorrentFileInfo>>(response.Item2, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
 
-            return fileList ?? new List<TorrentFileInfo>();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error parsing torrent contents JSON: {ex.Message}");
-            return null;
-        }
+        return fileList ?? new List<TorrentFileInfo>();
     }
 
-    public async Task<List<TorrentFileInfo>?> GetTorrentContentsAsync(string hash, List<int>? indexes = null)
+    public async Task<List<TorrentFileInfo>> GetTorrentContentsAsync(string hash, List<int>? indexes = null)
     {
         if (string.IsNullOrEmpty(hash))
         {
@@ -421,23 +413,15 @@ public class TorrentService(NetUtils netUtils)
         if (response.Item1 == HttpStatusCode.NotFound)
         {
             Console.WriteLine("Error: Torrent hash not found.");
-            return null;
+            return new List<TorrentFileInfo>();
         }
 
-        try
+        var fileList = JsonSerializer.Deserialize<List<TorrentFileInfo>>(response.Item2, new JsonSerializerOptions
         {
-            var fileList = JsonSerializer.Deserialize<List<TorrentFileInfo>>(response.Item2, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
 
-            return fileList ?? new List<TorrentFileInfo>();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error parsing torrent contents JSON: {ex.Message}");
-            return null;
-        }
+        return fileList ?? new List<TorrentFileInfo>();
     }
 
     public async Task<bool> RenameTorrentFileAsync(string hash, string oldPath, string newPath)
