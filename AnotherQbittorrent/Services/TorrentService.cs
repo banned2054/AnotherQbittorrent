@@ -18,6 +18,32 @@ public class TorrentService(NetUtils netUtils)
                                              bool              reverse  = false,
                                              int               limit    = 0,
                                              int               offset   = 0,
+                                             string            hash     = "")
+    {
+        var hashList = hash == "" ? null : new List<string> { hash };
+        return GetTorrentInfos(filter, category, tag, sort, reverse, limit, offset, hashList);
+    }
+
+    public async Task<List<TorrentInfo>> GetTorrentInfosAsync(EnumTorrentFilter filter   = EnumTorrentFilter.All,
+                                                              string?           category = null,
+                                                              string?           tag      = null,
+                                                              string?           sort     = null,
+                                                              bool              reverse  = false,
+                                                              int               limit    = 0,
+                                                              int               offset   = 0,
+                                                              string            hash     = "")
+    {
+        var hashList = hash == "" ? null : new List<string> { hash };
+        return await GetTorrentInfosAsync(filter, category, tag, sort, reverse, limit, offset, hashList);
+    }
+
+    public List<TorrentInfo> GetTorrentInfos(EnumTorrentFilter filter   = EnumTorrentFilter.All,
+                                             string?           category = null,
+                                             string?           tag      = null,
+                                             string?           sort     = null,
+                                             bool              reverse  = false,
+                                             int               limit    = 0,
+                                             int               offset   = 0,
                                              List<string>?     hashList = null)
     {
         var parameters = new Dictionary<string, string>
@@ -430,6 +456,48 @@ public class TorrentService(NetUtils netUtils)
         return fileList ?? new List<TorrentFileInfo>();
     }
 
+    public bool RenameTorrentFile(string hash, string oldPath, string newPath)
+    {
+        if (string.IsNullOrWhiteSpace(hash))
+        {
+            throw new ArgumentException("Torrent hash cannot be null or empty", nameof(hash));
+        }
+
+        if (string.IsNullOrWhiteSpace(oldPath))
+        {
+            throw new ArgumentException("Old path cannot be null or empty", nameof(oldPath));
+        }
+
+        if (string.IsNullOrWhiteSpace(newPath))
+        {
+            throw new ArgumentException("New path cannot be null or empty", nameof(newPath));
+        }
+
+        var parameters = new Dictionary<string, string>
+        {
+            { "hash", hash },
+            { "oldPath", oldPath },
+            { "newPath", newPath }
+        };
+
+        var response = netUtils.Post($"{BaseUrl}/renameFile", parameters);
+
+        switch (response.Item1)
+        {
+            case HttpStatusCode.OK :
+                return true;
+            case HttpStatusCode.BadRequest :
+                Console.WriteLine("Error: Missing newPath parameter.");
+                return false;
+            case HttpStatusCode.Conflict :
+                Console.WriteLine("Error: Invalid newPath, oldPath, or newPath is already in use.");
+                return false;
+            default :
+                Console.WriteLine($"Unexpected error: {response.Item1}");
+                return false;
+        }
+    }
+
     public async Task<bool> RenameTorrentFileAsync(string hash, string oldPath, string newPath)
     {
         if (string.IsNullOrWhiteSpace(hash))
@@ -455,6 +523,48 @@ public class TorrentService(NetUtils netUtils)
         };
 
         var response = await netUtils.PostAsync($"{BaseUrl}/renameFile", parameters);
+
+        switch (response.Item1)
+        {
+            case HttpStatusCode.OK :
+                return true;
+            case HttpStatusCode.BadRequest :
+                Console.WriteLine("Error: Missing newPath parameter.");
+                return false;
+            case HttpStatusCode.Conflict :
+                Console.WriteLine("Error: Invalid newPath, oldPath, or newPath is already in use.");
+                return false;
+            default :
+                Console.WriteLine($"Unexpected error: {response.Item1}");
+                return false;
+        }
+    }
+
+    public bool RenameTorrentFolder(string hash, string oldPath, string newPath)
+    {
+        if (string.IsNullOrWhiteSpace(hash))
+        {
+            throw new ArgumentException("Torrent hash cannot be null or empty", nameof(hash));
+        }
+
+        if (string.IsNullOrWhiteSpace(oldPath))
+        {
+            throw new ArgumentException("Old path cannot be null or empty", nameof(oldPath));
+        }
+
+        if (string.IsNullOrWhiteSpace(newPath))
+        {
+            throw new ArgumentException("New path cannot be null or empty", nameof(newPath));
+        }
+
+        var parameters = new Dictionary<string, string>
+        {
+            { "hash", hash },
+            { "oldPath", oldPath },
+            { "newPath", newPath }
+        };
+
+        var response = netUtils.Post($"{BaseUrl}/renameFolder", parameters);
 
         switch (response.Item1)
         {
