@@ -7,14 +7,14 @@ public class NetUtils
 {
     private readonly HttpClient      _client;
     private readonly CookieContainer _cookieContainer;
-    private readonly string          _userName;
-    private readonly string          _password;
-    private readonly string          _url;
-    private readonly object          _lock = new();
+    private readonly Uri             _baseUrl;
+
+    private readonly string _userName;
+    private readonly string _password;
 
     public NetUtils(string baseUrl, string userName, string password)
     {
-        _url             = baseUrl;
+        _baseUrl         = new Uri(baseUrl.TrimEnd('/') + "/");
         _userName        = userName;
         _password        = password;
         _cookieContainer = new CookieContainer();
@@ -39,13 +39,21 @@ public class NetUtils
     }
 
     /// <summary>
+    /// 拼接 baseUrl 和 subPath，确保不会出现多余或缺少 "/"
+    /// </summary>
+    private Uri CombineUrl(string subPath)
+    {
+        return new Uri(_baseUrl, subPath.TrimStart('/'));
+    }
+
+    /// <summary>
     /// 通用 GET 请求（同步）
     /// </summary>
     public (HttpStatusCode, string) Get(string subPath)
     {
         EnsureLoggedIn();
 
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{_url}{subPath}");
+        var request = new HttpRequestMessage(HttpMethod.Get, CombineUrl(subPath));
         request.Headers.ConnectionClose = true;
 
         return ExecuteWithRetry(() => _client.Send(request));
@@ -58,7 +66,7 @@ public class NetUtils
     {
         await EnsureLoggedInAsync();
 
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{_url}{subPath}");
+        var request = new HttpRequestMessage(HttpMethod.Get, CombineUrl(subPath));
         request.Headers.ConnectionClose = true;
 
         return await ExecuteWithRetryAsync(() => _client.SendAsync(request));
@@ -71,7 +79,7 @@ public class NetUtils
     {
         EnsureLoggedIn();
 
-        var request = new HttpRequestMessage(HttpMethod.Post, $"{_url}{subPath}")
+        var request = new HttpRequestMessage(HttpMethod.Post, CombineUrl(subPath))
         {
             Content = new FormUrlEncodedContent(parameters)
         };
@@ -87,7 +95,7 @@ public class NetUtils
     {
         await EnsureLoggedInAsync();
 
-        var request = new HttpRequestMessage(HttpMethod.Post, $"{_url}{subPath}")
+        var request = new HttpRequestMessage(HttpMethod.Post, CombineUrl(subPath))
         {
             Content = new FormUrlEncodedContent(parameters)
         };
@@ -123,7 +131,7 @@ public class NetUtils
             }
         }
 
-        var request = new HttpRequestMessage(HttpMethod.Post, $"{_url}/{subPath}") { Content = content };
+        var request = new HttpRequestMessage(HttpMethod.Post, CombineUrl(subPath)) { Content = content };
         request.Headers.ConnectionClose = true;
 
         return ExecuteWithRetry(() => _client.Send(request));
@@ -158,41 +166,25 @@ public class NetUtils
             }
         }
 
-        var request = new HttpRequestMessage(HttpMethod.Post, $"{_url}/{subPath}") { Content = content };
+        var request = new HttpRequestMessage(HttpMethod.Post, CombineUrl(subPath)) { Content = content };
         request.Headers.ConnectionClose = true;
 
         return await ExecuteWithRetryAsync(() => _client.SendAsync(request));
     }
 
-    /// <summary>
-    /// 确保已登录（异步）
-    /// </summary>
     private async Task EnsureLoggedInAsync()
     {
-        lock (_lock)
-        {
-            if (_cookieContainer.GetCookies(new Uri(_url)).Count > 0) return;
-        }
-
+        if (_cookieContainer.GetCookies(_baseUrl).Count > 0) return;
         await LoginAsync();
     }
 
-    /// <summary>
-    /// 确保已登录（同步）
-    /// </summary>
     private void EnsureLoggedIn()
     {
-        lock (_lock)
-        {
-            if (_cookieContainer.GetCookies(new Uri(_url)).Count > 0) return;
-        }
+        if (_cookieContainer.GetCookies(_baseUrl).Count > 0) return;
 
         Login();
     }
 
-    /// <summary>
-    /// 登录（异步）
-    /// </summary>
     private async Task LoginAsync()
     {
         var content = new FormUrlEncodedContent(new Dictionary<string, string>
@@ -201,16 +193,13 @@ public class NetUtils
             { "password", _password }
         });
 
-        var response = await _client.PostAsync($"{_url}/api/v2/auth/login", content);
+        var response = await _client.PostAsync(CombineUrl("api/v2/auth/login"), content);
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception($"Login failed: {response.StatusCode}");
         }
     }
 
-    /// <summary>
-    /// 登录（同步）
-    /// </summary>
     private void Login()
     {
         var content = new FormUrlEncodedContent(new Dictionary<string, string>
@@ -219,7 +208,7 @@ public class NetUtils
             { "password", _password }
         });
 
-        var response = _client.PostAsync($"{_url}/api/v2/auth/login", content).Result;
+        var response = _client.PostAsync(CombineUrl("api/v2/auth/login"), content).Result;
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception($"Login failed: {response.StatusCode}");

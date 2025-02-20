@@ -1,5 +1,4 @@
 using System.Text.Json;
-using AnotherQbittorrent.Models.Enums;
 
 namespace AnotherQbittorrent.Test;
 
@@ -15,19 +14,6 @@ public class TorrentUnitTest
     }
 
     [Test]
-    public void TestGetTorrentList()
-    {
-        var torrentList = _client.Torrent.GetTorrentInfos(EnumTorrentFilter.All, null, "tv");
-        if (torrentList != null)
-            foreach (var torrent in torrentList)
-            {
-                Console.WriteLine(JsonSerializer.Serialize(torrent));
-            }
-
-        Assert.Pass();
-    }
-
-    [Test]
     public void TestDeleteTorrent()
     {
         _client.Torrent.DeleteTorrent("b963306bd91ff97492079b5510e91a111757322f");
@@ -39,15 +25,15 @@ public class TorrentUnitTest
         var torrentPaths =
             new List<string>
             {
-                "D:\\Downloads\\[BYRBT].[Sakurato] Okinawa de Suki ni Natta Ko ga Hougen Sugite Tsura Sugiru [04][AVC-8bit 1080p AAC][CHS&JPN].mp4.torrent"
+                "D:\\Downloads\\[BYRBT].[Nekomoe kissaten][BanG Dream! Ave Mujica][07][1080p][JPSC].mp4.torrent"
             };
-        var tags = "tv,mikan";
+        var tags = "tv|byr-anime";
         await _client.Torrent.AddTorrentAsync(
                                               filePaths : torrentPaths,
-                                              savePath : "/downloads/Media/Anime",
+                                              savePath : "/downloads",
                                               paused : true,
                                               tags : tags,
-                                              rename : "[Anime]在冲绳喜欢上的女孩方言讲得太过令人困扰 E04",
+                                              rename : "[Anime]BanG Dream! Ave Mujica E07",
                                               ratioLimit : -1
                                              );
     }
