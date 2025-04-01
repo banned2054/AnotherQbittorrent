@@ -3,11 +3,14 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<PackageId>AnotherQbittorrent</PackageId>
-		<Version>0.1.1</Version>
+		<Version>0.1.2</Version>
 		<RepositoryUrl>https://github.com/banned2054/AnotherQbittorrent</RepositoryUrl>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<Nullable>enable</Nullable>
 		<Description>Another qBittorrent api library</Description>
 	</PropertyGroup>
+	<ItemGroup>
+		<None Include="..\README.md" Link="Docs\README.md" />
+	</ItemGroup>
 </Project>

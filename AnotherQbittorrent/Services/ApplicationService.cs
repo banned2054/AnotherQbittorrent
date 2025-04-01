@@ -1,4 +1,5 @@
-﻿using AnotherQbittorrent.Utils;
+using AnotherQbittorrent.Models.Application;
+using AnotherQbittorrent.Utils;
 
 namespace AnotherQbittorrent.Services;
 
@@ -6,10 +7,10 @@ public class ApplicationService(NetUtils netUtils)
 {
     private const string BaseUrl = "/api/v2/app";
 
-    public string GetApiVersion()
+    public ApiVersion GetApiVersion()
     {
         var result = netUtils.Get($"{BaseUrl}/webapiVersion");
-        return result.Item2;
+        return new ApiVersion(result.Item2);
     }
 
     public string GetVersion()

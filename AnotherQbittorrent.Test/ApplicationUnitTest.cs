@@ -12,7 +12,7 @@ public class ApplicationUnitTest
     }
 
     [Test]
-    public void TestGetVersion()
+    public void TestGetApiVersion()
     {
         var version = _client.Application.GetApiVersion();
         Console.WriteLine(version);

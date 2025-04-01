@@ -1,4 +1,4 @@
-﻿namespace AnotherQbittorrent.Models.Enums;
+namespace AnotherQbittorrent.Models.Enums;
 
 public enum EnumTorrentState
 {
@@ -67,6 +67,7 @@ internal static class EnumTorrentStateExtensions
             "allocating"         => EnumTorrentState.Allocating,
             "downloading"        => EnumTorrentState.Downloading,
             "metaDL"             => EnumTorrentState.MetaDownload,
+            "stoppedDL"          => EnumTorrentState.PausedDownload, // ✅ 兼容旧状态
             "pausedDL"           => EnumTorrentState.PausedDownload,
             "queuedDL"           => EnumTorrentState.QueuedDownload,
             "stalledDL"          => EnumTorrentState.StalledDownload,

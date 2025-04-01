@@ -1,3 +1,4 @@
+using AnotherQbittorrent.Models.Application;
 using AnotherQbittorrent.Models.Enums;
 using AnotherQbittorrent.Models.Requests;
 using AnotherQbittorrent.Models.Torrent;
@@ -7,9 +8,10 @@ using System.Text.Json;
 
 namespace AnotherQbittorrent.Services;
 
-public class TorrentService(NetUtils netUtils)
+public class TorrentService(NetUtils netUtils, ApiVersion apiVersion)
 {
-    private const string BaseUrl = "/api/v2/torrents";
+    private const    string     BaseUrl      = "/api/v2/torrents";
+    private readonly ApiVersion _apiVersion5 = new("2.11.0");
 
     public List<TorrentInfo> GetTorrentInfos(EnumTorrentFilter filter   = EnumTorrentFilter.All,
                                              string?           category = null,
@@ -161,11 +163,9 @@ public class TorrentService(NetUtils netUtils)
         netUtils.Post($"{BaseUrl}/delete", parameters);
     }
 
-    public void DeleteTorrent(List<string> hashList, bool deleteFile = false)
-    {
-        var hash = string.Join('|', hashList.ToArray());
-        DeleteTorrent(hash, deleteFile);
-    }
+    public void DeleteTorrent(List<string> hashList, bool deleteFile = false) =>
+        DeleteTorrent(string.Join('|', hashList.ToArray()), deleteFile);
+
 
     public async Task DeleteTorrentAsync(string hash, bool deleteFile = false)
     {
@@ -178,11 +178,9 @@ public class TorrentService(NetUtils netUtils)
         await netUtils.PostAsync($"{BaseUrl}/delete", parameters);
     }
 
-    public async Task DeleteTorrentAsync(List<string> hashList, bool deleteFile = false)
-    {
-        var hash = string.Join('|', hashList.ToArray());
-        await DeleteTorrentAsync(hash, deleteFile);
-    }
+    public async Task DeleteTorrentAsync(List<string> hashList, bool deleteFile = false) =>
+        await DeleteTorrentAsync(string.Join('|', hashList.ToArray()), deleteFile);
+
 
     public void ResumeTorrent(string hash)
     {
@@ -190,8 +188,7 @@ public class TorrentService(NetUtils netUtils)
         {
             { "hashes", hash },
         };
-
-        netUtils.Post($"{BaseUrl}/resume", parameters);
+        netUtils.Post(apiVersion < _apiVersion5 ? $"{BaseUrl}/resume" : $"{BaseUrl}/start", parameters);
     }
 
     public void ResumeTorrent(List<string> hashList)
@@ -206,8 +203,10 @@ public class TorrentService(NetUtils netUtils)
         {
             { "hashes", hash },
         };
-
-        await netUtils.PostAsync($"{BaseUrl}/resume", parameters);
+        if (apiVersion < _apiVersion5)
+            await netUtils.PostAsync($"{BaseUrl}/resume", parameters);
+        else
+            await netUtils.PostAsync($"{BaseUrl}/start", parameters);
     }
 
     public async Task ResumeTorrentAsync(List<string> hashList)
@@ -218,6 +217,11 @@ public class TorrentService(NetUtils netUtils)
 
     public void ReannounceTorrent(string hash)
     {
+        if (apiVersion < new ApiVersion("2.0.2"))
+        {
+            throw new Exception("This method was introduced with qBittorrent v4.1.2 (Web API v2.0.2).");
+        }
+
         var parameters = new Dictionary<string, string>
         {
             { "hashes", hash },
@@ -226,14 +230,17 @@ public class TorrentService(NetUtils netUtils)
         netUtils.Post($"{BaseUrl}/reannounce", parameters);
     }
 
-    public void ReannounceTorrent(List<string> hashList)
-    {
-        var hash = string.Join('|', hashList.ToArray());
-        ReannounceTorrent(hash);
-    }
+    public void ReannounceTorrent(List<string> hashList) =>
+        ReannounceTorrent(string.Join('|', hashList.ToArray()));
+
 
     public async Task ReannounceTorrentAsync(string hash)
     {
+        if (apiVersion < new ApiVersion("2.0.2"))
+        {
+            throw new Exception("This method was introduced with qBittorrent v4.1.2 (Web API v2.0.2).");
+        }
+
         var parameters = new Dictionary<string, string>
         {
             { "hashes", hash },
@@ -242,11 +249,8 @@ public class TorrentService(NetUtils netUtils)
         await netUtils.PostAsync($"{BaseUrl}/reannounce", parameters);
     }
 
-    public async Task ReannounceTorrentAsync(List<string> hashList)
-    {
-        var hash = string.Join('|', hashList.ToArray());
-        await ReannounceTorrentAsync(hash);
-    }
+    public async Task ReannounceTorrentAsync(List<string> hashList) =>
+        await ReannounceTorrentAsync(string.Join('|', hashList.ToArray()));
 
     public void RecheckTorrent(string hash)
     {
@@ -258,11 +262,8 @@ public class TorrentService(NetUtils netUtils)
         netUtils.Post($"{BaseUrl}/recheck", parameters);
     }
 
-    public void RecheckTorrent(List<string> hashList)
-    {
-        var hash = string.Join('|', hashList.ToArray());
-        RecheckTorrent(hash);
-    }
+    public void RecheckTorrent(List<string> hashList) =>
+        RecheckTorrent(string.Join('|', hashList.ToArray()));
 
     public async Task RecheckTorrentAsync(string hash)
     {
@@ -273,33 +274,66 @@ public class TorrentService(NetUtils netUtils)
         await netUtils.PostAsync($"{BaseUrl}/recheck", parameters);
     }
 
-    public async Task RecheckTorrentAsync(List<string> hashList)
-    {
-        var hash = string.Join('|', hashList.ToArray());
-        await RecheckTorrentAsync(hash);
-    }
+    public async Task RecheckTorrentAsync(List<string> hashList) =>
+        await RecheckTorrentAsync(string.Join('|', hashList.ToArray()));
 
+    /// <summary>
+    /// 暂停Torrent，5.0.0开始使用stop而不是pause
+    /// </summary>
+    public void StopTorrent(string hash) => PauseTorrent(hash);
+
+    /// <summary>
+    /// 暂停Torrent，5.0.0之前使用pause，之后更新成stop
+    /// </summary>
     public void PauseTorrent(string hash)
     {
-        netUtils.Get($"{BaseUrl}/pause?hashes={hash}");
+        var parameters = new Dictionary<string, string>
+        {
+            { "hashes", hash },
+        };
+        netUtils.Post(apiVersion < _apiVersion5 ? $"{BaseUrl}/pause" : $"{BaseUrl}/stop", parameters);
     }
 
-    public void PauseTorrent(List<string> hashList)
-    {
-        var hash = string.Join('|', hashList.ToArray());
-        PauseTorrent(hash);
-    }
+    /// <summary>
+    /// 暂停Torrent，5.0.0开始使用stop而不是pause
+    /// </summary>
+    public void StopTorrent(List<string> hashList) => PauseTorrent(hashList);
 
+    /// <summary>
+    /// 暂停Torrent，5.0.0之前使用pause，之后更新成stop
+    /// </summary>
+    public void PauseTorrent(List<string> hashList) => PauseTorrent(string.Join('|', hashList.ToArray()));
+
+    /// <summary>
+    /// 暂停Torrent，5.0.0开始使用stop而不是pause
+    /// </summary>
+    public async Task StopTorrentAsync(string hash) => await PauseTorrentAsync(hash);
+
+    /// <summary>
+    /// 暂停Torrent，5.0.0之前使用pause，之后更新成stop
+    /// </summary>
     public async Task PauseTorrentAsync(string hash)
     {
-        await netUtils.GetAsync($"{BaseUrl}/pause?hashes={hash}");
+        var parameters = new Dictionary<string, string>
+        {
+            { "hashes", hash },
+        };
+        if (apiVersion < _apiVersion5)
+            await netUtils.PostAsync($"{BaseUrl}/pause", parameters);
+        else
+            await netUtils.PostAsync($"{BaseUrl}/stop", parameters);
     }
 
-    public async Task PauseTorrentAsync(List<string> hashList)
-    {
-        var hash = string.Join('|', hashList.ToArray());
-        await PauseTorrentAsync(hash);
-    }
+    /// <summary>
+    /// 暂停Torrent，5.0.0开始使用stop而不是pause
+    /// </summary>
+    public async Task StopTorrentAsync(List<string> hashList) => await PauseTorrentAsync(hashList);
+
+    /// <summary>
+    /// 暂停Torrent，5.0.0之前使用pause，之后更新成stop
+    /// </summary>
+    public async Task PauseTorrentAsync(List<string> hashList) =>
+        await PauseTorrentAsync(string.Join('|', hashList.ToArray()));
 
     public List<TrackerInfo> GetTrackerList(string hash)
     {

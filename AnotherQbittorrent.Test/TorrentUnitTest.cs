@@ -25,26 +25,22 @@ public class TorrentUnitTest
         var torrentPaths =
             new List<string>
             {
-                "D:\\Downloads\\[BYRBT].[Nekomoe kissaten][BanG Dream! Ave Mujica][07][1080p][JPSC].mp4.torrent"
+                "D:\\Downloads\\[U2][jsum][Mahou Tsukai Precure!][01-50][1080p][JPSC].mp4.torrent"
             };
-        var tags = "tv|byr-anime";
+        var tags = "byr-anime";
         await _client.Torrent.AddTorrentAsync(
                                               filePaths : torrentPaths,
                                               savePath : "/downloads",
                                               paused : true,
                                               tags : tags,
-                                              rename : "[Anime]BanG Dream! Ave Mujica E07",
+                                              rename : "[Anime]魔法使光之美少女",
                                               ratioLimit : -1
                                              );
     }
 
     [Test]
-    public void GetTorrentTrackers()
+    public async Task GetTorrentTrackers()
     {
-        var trackers = _client.Torrent.GetTrackerList("77de2b4c96e59c23422085cfd1dbad10d440abd7");
-        foreach (var tracker in trackers)
-        {
-            Console.WriteLine(JsonSerializer.Serialize(tracker));
-        }
+        var trackers = await _client.Torrent.GetTorrentInfosAsync(hash : "d092ce98ea297205dfb30433e127b9980a2dd23f");
     }
 }
