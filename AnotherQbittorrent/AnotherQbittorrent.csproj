@@ -9,8 +9,9 @@
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<Nullable>enable</Nullable>
 		<Description>Another qBittorrent api library</Description>
+		<readme>docs\README.md</readme>
 	</PropertyGroup>
 	<ItemGroup>
-		<None Include="..\README.md" Link="Docs\README.md" />
+		<None Include="..\README.md" target="docs\" />
 	</ItemGroup>
 </Project>
