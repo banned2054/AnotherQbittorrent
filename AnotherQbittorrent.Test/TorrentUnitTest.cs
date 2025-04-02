@@ -31,7 +31,7 @@ public class TorrentUnitTest
         await _client.Torrent.AddTorrentAsync(
                                               filePaths : torrentPaths,
                                               savePath : "/downloads",
-                                              paused : true,
+                                              stopped : true,
                                               tags : tags,
                                               rename : "[Anime]魔法使光之美少女",
                                               ratioLimit : -1
