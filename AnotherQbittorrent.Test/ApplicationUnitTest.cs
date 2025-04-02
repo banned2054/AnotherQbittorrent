@@ -12,17 +12,17 @@ public class ApplicationUnitTest
     }
 
     [Test]
-    public void TestGetApiVersion()
+    public async Task TestGetApiVersion()
     {
-        var version = _client.Application.GetApiVersion();
+        var version = await _client.Application.GetApiVersionAsync();
         Console.WriteLine(version);
         Assert.Pass();
     }
 
     [Test]
-    public void TestGetBuildInfo()
+    public async Task TestGetBuildInfo()
     {
-        var buildInfo = _client.Application.GetBuildInfo();
+        var buildInfo = await _client.Application.GetBuildInfoAsync();
         Console.WriteLine(buildInfo);
         Assert.Pass();
     }

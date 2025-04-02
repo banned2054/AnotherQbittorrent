@@ -14,9 +14,9 @@ public class TorrentUnitTest
     }
 
     [Test]
-    public void TestDeleteTorrent()
+    public async Task TestDeleteTorrent()
     {
-        _client.Torrent.DeleteTorrent("b963306bd91ff97492079b5510e91a111757322f");
+        await _client.Torrent.DeleteTorrentAsync("b963306bd91ff97492079b5510e91a111757322f");
     }
 
     [Test]
