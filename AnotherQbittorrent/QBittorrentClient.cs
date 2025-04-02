@@ -13,7 +13,7 @@ public class QBittorrentClient
         var netUtils = new NetUtils(url, userName, password);
 
         Application = new ApplicationService(netUtils);
-        var apiVersion = Application.GetApiVersion();
+        var apiVersion = Application.GetApiVersionAsync().Result;
 
         Torrent = new TorrentService(netUtils, apiVersion);
     }
