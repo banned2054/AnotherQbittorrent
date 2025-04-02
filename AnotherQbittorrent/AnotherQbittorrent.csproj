@@ -13,5 +13,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<None Include="..\README.md" target="docs\" />
+		<None Include="..\Docs\" Link="Docs\" />
 	</ItemGroup>
 </Project>

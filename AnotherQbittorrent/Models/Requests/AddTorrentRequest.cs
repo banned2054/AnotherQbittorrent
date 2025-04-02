@@ -10,6 +10,7 @@ public class AddTorrentRequest
     public string?       Category               { get; set; }
     public string?       Tags                   { get; set; }
     public bool?         SkipChecking           { get; set; }
+    public bool?         Paused                 { get; set; }
     public bool?         Stopped                { get; set; }
     public bool?         RootFolder             { get; set; }
     public string?       Rename                 { get; set; }
@@ -34,10 +35,16 @@ public class AddTorrentRequest
         if (!string.IsNullOrEmpty(Category)) parameters["category"] = Category;
         if (!string.IsNullOrEmpty(Tags)) parameters["tags"]         = Tags;
         if (SkipChecking.HasValue) parameters["skip_checking"]      = SkipChecking.Value.ToString().ToLower();
+
         if (Stopped.HasValue)
         {
             parameters["paused"]  = Stopped.Value.ToString().ToLower();
             parameters["stopped"] = Stopped.Value.ToString().ToLower();
+        }
+        else if (Paused.HasValue)
+        {
+            parameters["paused"]  = Paused.Value.ToString().ToLower();
+            parameters["stopped"] = Paused.Value.ToString().ToLower();
         }
 
         if (RootFolder.HasValue) parameters["root_folder"] = RootFolder.Value.ToString().ToLower();

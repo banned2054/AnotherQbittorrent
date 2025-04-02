@@ -382,7 +382,33 @@ public class TorrentService(NetUtils netUtils, ApiVersion apiVersion)
         }
     }
 
-    // 兼容旧版本，直接传入参数
+    /// <summary>
+    /// 5.0开始用stopped替代pause
+    /// </summary>
+    public async Task<string> AddTorrentAsync(
+        List<string>? filePaths              = null,
+        List<string>? urls                   = null,
+        string?       savePath               = "/download",
+        string?       category               = null,
+        string?       tags                   = null,
+        string?       rename                 = null,
+        bool?         skipChecking           = null,
+        bool?         stopped                = null,
+        bool?         rootFolder             = null,
+        int?          uploadLimit            = null,
+        int?          downloadLimit          = null,
+        float?        ratioLimit             = null,
+        int?          seedingTimeLimit       = null,
+        bool?         autoTmm                = null,
+        bool?         sequentialDownload     = null,
+        bool?         firstLastPiecePriority = null) =>
+        await AddTorrentAsync(filePaths, urls, savePath, category, tags, skipChecking, stopped, rootFolder, rename,
+                              uploadLimit, downloadLimit, ratioLimit, seedingTimeLimit, autoTmm, sequentialDownload,
+                              firstLastPiecePriority);
+
+    /// <summary>
+    /// 5.0之前用pause，而不是stopped
+    /// </summary>
     public async Task<string> AddTorrentAsync(
         List<string>? filePaths              = null,
         List<string>? urls                   = null,
@@ -390,7 +416,7 @@ public class TorrentService(NetUtils netUtils, ApiVersion apiVersion)
         string?       category               = null,
         string?       tags                   = null,
         bool?         skipChecking           = null,
-        bool?         stopped                = null,
+        bool?         paused                 = null,
         bool?         rootFolder             = null,
         string?       rename                 = null,
         int?          uploadLimit            = null,
@@ -409,7 +435,6 @@ public class TorrentService(NetUtils netUtils, ApiVersion apiVersion)
             Category               = category,
             Tags                   = tags,
             SkipChecking           = skipChecking,
-            Stopped                = stopped,
             RootFolder             = rootFolder,
             Rename                 = rename,
             UploadLimit            = uploadLimit,
@@ -420,6 +445,14 @@ public class TorrentService(NetUtils netUtils, ApiVersion apiVersion)
             SequentialDownload     = sequentialDownload,
             FirstLastPiecePriority = firstLastPiecePriority
         };
+        if (apiVersion < _apiVersion5)
+        {
+            request.Paused = paused;
+        }
+        else
+        {
+            request.Stopped = paused;
+        }
 
         return await AddTorrentAsync(request);
     }
