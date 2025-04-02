@@ -19,7 +19,7 @@ public class ApiVersion : IComparable<ApiVersion>
             throw new ArgumentException("Version string cannot be null or empty.", nameof(versionString));
 
         if (versionString.StartsWith("v"))
-            versionString = versionString.Substring(1);
+            versionString = versionString[1..];
 
         var parts = versionString.Split('.');
         Major = parts.Length > 0 ? int.Parse(parts[0]) : 0;
