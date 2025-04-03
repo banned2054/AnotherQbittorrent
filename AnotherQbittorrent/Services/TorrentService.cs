@@ -204,30 +204,6 @@ public class TorrentService(NetUtils netUtils, ApiVersion apiVersion)
     }
 
     /// <summary>
-    /// 5.0开始用stopped替代pause
-    /// </summary>
-    public async Task<string> AddTorrentAsync(
-        List<string>? filePaths              = null,
-        List<string>? urls                   = null,
-        string?       savePath               = "/download",
-        string?       category               = null,
-        string?       tags                   = null,
-        string?       rename                 = null,
-        bool?         skipChecking           = null,
-        bool?         stopped                = null,
-        bool?         rootFolder             = null,
-        int?          uploadLimit            = null,
-        int?          downloadLimit          = null,
-        float?        ratioLimit             = null,
-        int?          seedingTimeLimit       = null,
-        bool?         autoTmm                = null,
-        bool?         sequentialDownload     = null,
-        bool?         firstLastPiecePriority = null) =>
-        await AddTorrentAsync(filePaths, urls, savePath, category, tags, skipChecking, stopped, rootFolder, rename,
-                              uploadLimit, downloadLimit, ratioLimit, seedingTimeLimit, autoTmm, sequentialDownload,
-                              firstLastPiecePriority);
-
-    /// <summary>
     /// 5.0之前用pause，而不是stopped
     /// </summary>
     public async Task<string> AddTorrentAsync(
@@ -237,6 +213,7 @@ public class TorrentService(NetUtils netUtils, ApiVersion apiVersion)
         string?       category               = null,
         string?       tags                   = null,
         bool?         skipChecking           = null,
+        bool?         stopped                = null,
         bool?         paused                 = null,
         bool?         rootFolder             = null,
         string?       rename                 = null,
@@ -268,11 +245,11 @@ public class TorrentService(NetUtils netUtils, ApiVersion apiVersion)
         };
         if (apiVersion < _apiVersion5)
         {
-            request.Paused = paused;
+            request.Paused = stopped ?? paused;
         }
         else
         {
-            request.Stopped = paused;
+            request.Stopped = stopped ?? paused;
         }
 
         return await AddTorrentAsync(request);

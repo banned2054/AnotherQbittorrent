@@ -25,16 +25,15 @@ public class TorrentUnitTest
         var torrentPaths =
             new List<string>
             {
-                "D:\\Downloads\\[U2][jsum][Mahou Tsukai Precure!][01-50][1080p][JPSC].mp4.torrent"
+                "D:\\Downloads\\Your.Forma.S01E01.1080p.BILI.WEB-DL.AAC2.0.H.264-VARYG.torrent"
             };
-        var tags = "byr-anime";
+        var tags = "test";
         await _client.Torrent.AddTorrentAsync(
                                               filePaths : torrentPaths,
                                               savePath : "/downloads",
                                               stopped : true,
                                               tags : tags,
-                                              rename : "[Anime]魔法使光之美少女",
-                                              ratioLimit : -1
+                                              rename : "test-download"
                                              );
     }
 

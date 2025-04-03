@@ -40,12 +40,19 @@ public class ApiVersion : IComparable<ApiVersion>
         return $"{Major}.{Minor}.{Patch}";
     }
 
-    public static bool operator >(ApiVersion   a, ApiVersion  b) => a.CompareTo(b)  > 0;
-    public static bool operator <(ApiVersion   a, ApiVersion  b) => a.CompareTo(b)  < 0;
-    public static bool operator >=(ApiVersion  a, ApiVersion  b) => a.CompareTo(b)  >= 0;
-    public static bool operator <=(ApiVersion  a, ApiVersion  b) => a.CompareTo(b)  <= 0;
-    public static bool operator ==(ApiVersion? a, ApiVersion? b) => a?.CompareTo(b) == 0;
-    public static bool operator !=(ApiVersion  a, ApiVersion  b) => !(a == b);
+    public static bool operator >(ApiVersion  a, ApiVersion b) => a.CompareTo(b) > 0;
+    public static bool operator <(ApiVersion  a, ApiVersion b) => a.CompareTo(b) < 0;
+    public static bool operator >=(ApiVersion a, ApiVersion b) => a.CompareTo(b) >= 0;
+    public static bool operator <=(ApiVersion a, ApiVersion b) => a.CompareTo(b) <= 0;
+
+    public static bool operator ==(ApiVersion? a, ApiVersion? b)
+    {
+        if (ReferenceEquals(a, b)) return true;   // 同一个引用或都是 null
+        if (a is null || b is null) return false; // 有一个 null，另一个不是
+        return a.CompareTo(b) == 0;
+    }
+
+    public static bool operator !=(ApiVersion? a, ApiVersion? b) => !(a == b);
 
     public override bool Equals(object? obj)
     {
