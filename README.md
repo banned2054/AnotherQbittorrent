@@ -1,4 +1,4 @@
-# AnotherQbittorrent
+# [AnotherQbittorrent](https://github.com/banned2054/AnotherQbittorrent)
 
 参考python的[qbittorrent-api](https://github.com/rmartin16/qbittorrent-api)和官方wiki，开发的第三方qbittorrent sdk，相比[qbittorrent-net-client](https://github.com/fedarovich/qbittorrent-net-client)，修改了很多api的访问，从get改成了post（否则很多数据不能及时更新）。
 

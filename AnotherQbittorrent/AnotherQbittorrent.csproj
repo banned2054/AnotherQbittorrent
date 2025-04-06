@@ -5,14 +5,16 @@
 		<PackageId>AnotherQbittorrent</PackageId>
 		<Version>0.1.5</Version>
 		<RepositoryUrl>https://github.com/banned2054/AnotherQbittorrent</RepositoryUrl>
+		<Authors>banned2054</Authors>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<Nullable>enable</Nullable>
 		<Description>Another qBittorrent api library</Description>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageTags>qbittorrent;api;dotnet;httpclient</PackageTags>
 	</PropertyGroup>
 	<ItemGroup>
-		<None Include="..\README.md" Pack="true" PackagePath="" Link="README.md" />
+		<None Include="README.md" Pack="true" PackagePath="" />
 		<None Include="..\Docs" Link="Docs" />
 	</ItemGroup>
 </Project>
