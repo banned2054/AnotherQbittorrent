@@ -3,16 +3,16 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<PackageId>AnotherQbittorrent</PackageId>
-		<Version>0.1.4</Version>
+		<Version>0.1.5</Version>
 		<RepositoryUrl>https://github.com/banned2054/AnotherQbittorrent</RepositoryUrl>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<Nullable>enable</Nullable>
 		<Description>Another qBittorrent api library</Description>
-		<readme>docs\README.md</readme>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 	<ItemGroup>
-		<None Include="..\README.md" target="docs\" />
+		<None Include="..\README.md" Pack="true" PackagePath="" Link="README.md" />
 		<None Include="..\Docs" Link="Docs" />
 	</ItemGroup>
 </Project>

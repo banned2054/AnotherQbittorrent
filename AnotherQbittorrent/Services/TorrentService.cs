@@ -77,10 +77,17 @@ public class TorrentService(NetUtils netUtils, ApiVersion apiVersion)
         return response.Item1 == HttpStatusCode.OK ? StringToTorrentInfoList(response.Item2) : new List<TorrentInfo>();
     }
 
-    public static List<TorrentInfo> StringToTorrentInfoList(string jsonString)
+    public List<TorrentInfo> StringToTorrentInfoList(string jsonString)
     {
         var options = new JsonSerializerOptions();
-        options.Converters.Add(new TorrentInfoConverter());
+        if (apiVersion < _apiVersion5)
+        {
+            options.Converters.Add(new TorrentInfoConverterV4());
+        }
+        else
+        {
+            options.Converters.Add(new TorrentInfoConverterV5());
+        }
 
         var torrentInfos = JsonSerializer.Deserialize<List<TorrentInfo>>(jsonString, options) ??
                            new List<TorrentInfo>();

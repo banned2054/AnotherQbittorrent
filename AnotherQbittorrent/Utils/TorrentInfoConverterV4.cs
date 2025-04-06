@@ -1,11 +1,14 @@
-﻿using AnotherQbittorrent.Models.Enums;
+using AnotherQbittorrent.Models.Enums;
 using AnotherQbittorrent.Models.Torrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace AnotherQbittorrent.Utils;
 
-public class TorrentInfoConverter : JsonConverter<TorrentInfo>
+/// <summary>
+/// Qbittorrent版本小于5.x.x的实现方法
+/// </summary>
+public class TorrentInfoConverterV4 : JsonConverter<TorrentInfo>
 {
     public override TorrentInfo Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
@@ -51,7 +54,7 @@ public class TorrentInfoConverter : JsonConverter<TorrentInfo>
             SeenComplete = FromUnixTimeSeconds(dictionary["seen_complete"].GetInt64()),
             SeqDl = dictionary["seq_dl"].GetBoolean(),
             Size = dictionary["size"].GetInt64(),
-            State = EnumTorrentStateExtensions.FromTorrentStateString(dictionary["state"].GetString()!),
+            State = EnumTorrentStateExtensions.FromTorrentStateStringV4(dictionary["state"].GetString()!),
             SuperSeeding = dictionary["super_seeding"].GetBoolean(),
             TagList = dictionary["tags"]
                      .GetString()!
