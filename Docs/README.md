@@ -17,11 +17,8 @@ dotnet add package Banned.Qbittorrent
 ```csharp
 using Banned.Qbittorrent;
 
-// 创建客户端实例
-var client = new QbittorrentClient("http://localhost:8080");
-
-// 登录（如果启用了身份验证）
-await client.LoginAsync("username", "password");
+// 创建带认证的客户端实例
+var client = new QbittorrentClient("http://localhost:8080", "username", "password");
 
 // 获取种子列表
 var torrents = await client.GetTorrentListAsync();
