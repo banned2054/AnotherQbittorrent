@@ -3,11 +3,11 @@ name: Build and Push NuGet Package
 on:
   release:
     types:
-      - created # 仅在新的 Release 创建时触发
+      - created # Trigger only on new release creation
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # 也可以选择 windows-latest，视你的需求而定
+    runs-on: ubuntu-latest  # Can be changed to windows-latest if needed
 
     steps:
     - name: Checkout repository
@@ -16,11 +16,8 @@ jobs:
     - name: Set up .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.0'  # 根据你的项目需要调整 .NET 版本
+        dotnet-version: '8.0'  # Adjust as per your project needs
 
-    - name: Install xmllint
-      run: sudo apt-get update && sudo apt-get install -y libxml2-utils
-      
     - name: Restore dependencies
       run: dotnet restore Banned.Qbittorrent/Banned.Qbittorrent.csproj
 
@@ -29,6 +26,9 @@ jobs:
 
     - name: Pack the project
       run: dotnet pack Banned.Qbittorrent/Banned.Qbittorrent.csproj --configuration Release --no-build --output nupkg
+
+    - name: Install xmllint
+      run: sudo apt-get update && sudo apt-get install -y libxml2-utils
 
     - name: Extract version from .csproj
       id: extract_version
