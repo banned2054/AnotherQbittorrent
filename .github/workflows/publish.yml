@@ -28,7 +28,9 @@ jobs:
       run: dotnet pack Banned.Qbittorrent/Banned.Qbittorrent.csproj --configuration Release --no-build --output nupkg
 
     - name: Install xmllint
-      run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+      run: |
+        sudo apt-get update && sudo apt-get install -y libxml2-utils
+        xmllint --version  # 检查 xmllint 是否成功安装
 
     - name: Extract version from .csproj
       id: extract_version
