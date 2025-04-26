@@ -2,9 +2,9 @@
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
-		<PackageId>AnotherQbittorrent</PackageId>
-		<Version>0.1.5-deprecated</Version>
-		<RepositoryUrl>https://github.com/banned2054/AnotherQbittorrent</RepositoryUrl>
+		<PackageId>Banned.Qbittorrent</PackageId>
+		<Version>0.0.1</Version>
+		<RepositoryUrl>https://github.com/banned2054/Banned.Qbittorrent</RepositoryUrl>
 		<Authors>banned2054</Authors>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
