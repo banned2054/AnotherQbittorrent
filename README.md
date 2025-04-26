@@ -1,4 +1,6 @@
-# AnotherQbittorrent
+# Banned.Qbittorrent
+
+[中文文档](Docs/README.md)
 
 A .NET client library for qBittorrent's Web API, inspired by [qbittorrent-api](https://github.com/rmartin16/qbittorrent-api) and the official qBittorrent wiki. This library improves upon [qbittorrent-net-client](https://github.com/fedarovich/qbittorrent-net-client) by using POST requests instead of GET for better data synchronization.
 
@@ -7,13 +9,13 @@ A .NET client library for qBittorrent's Web API, inspired by [qbittorrent-api](h
 Install via NuGet Package Manager:
 
 ```bash
-dotnet add package AnotherQbittorrent
+dotnet add package Banned.Qbittorrent
 ```
 
 ## Quick Start
 
 ```csharp
-using AnotherQbittorrent;
+using Banned.Qbittorrent;
 
 // Create a client instance
 var client = new QbittorrentClient("http://localhost:8080");
@@ -36,7 +38,7 @@ await client.ResumeTorrentsAsync(new[] { "torrent_hash" });
 
 ## Version
 
-Current version: 0.1.5
+Current version: 0.0.1
 
 ## License
 
