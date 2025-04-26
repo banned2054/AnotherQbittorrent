@@ -47,7 +47,3 @@ This project is licensed under the Apache License 2.0.
 ## Contributing
 
 Contributions are welcome! Feel free to submit issues and pull requests.
-
-## Documentation
-
-For Chinese documentation, please refer to [Docs/README.md](Docs/README.md).
