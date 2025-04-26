@@ -9,7 +9,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<Nullable>enable</Nullable>
-		<Description>Another qBittorrent api library</Description>
+		<Description>A .NET client library for qBittorrent's Web API</Description>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageTags>qbittorrent;api;dotnet;httpclient</PackageTags>
 	</PropertyGroup>
