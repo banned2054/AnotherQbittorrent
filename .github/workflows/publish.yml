@@ -1,9 +1,9 @@
 name: Build and Push NuGet Package
 
 on:
-  push:
-    branches:
-      - main   # 触发工作流的分支
+  release:
+    types:
+      - created # 仅在新的 Release 创建时触发
 
 jobs:
   build:
