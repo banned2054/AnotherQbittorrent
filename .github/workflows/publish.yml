@@ -18,6 +18,9 @@ jobs:
       with:
         dotnet-version: '8.0'  # 根据你的项目需要调整 .NET 版本
 
+    - name: Install xmllint
+      run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+      
     - name: Restore dependencies
       run: dotnet restore Banned.Qbittorrent/Banned.Qbittorrent.csproj
 
