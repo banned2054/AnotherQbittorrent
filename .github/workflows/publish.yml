@@ -19,23 +19,23 @@ jobs:
         dotnet-version: '8.0'  # 根据你的项目需要调整 .NET 版本
 
     - name: Restore dependencies
-      run: dotnet restore AnotherQbittorrent/AnotherQbittorrent.csproj
+      run: dotnet restore Banned.Qbittorrent/Banned.Qbittorrent.csproj
 
     - name: Build the project
-      run: dotnet build AnotherQbittorrent/AnotherQbittorrent.csproj --configuration Release --no-restore
+      run: dotnet build Banned.Qbittorrent/Banned.Qbittorrent.csproj --configuration Release --no-restore
 
     - name: Pack the project
-      run: dotnet pack AnotherQbittorrent/AnotherQbittorrent.csproj --configuration Release --no-build --output nupkg
+      run: dotnet pack Banned.Qbittorrent/Banned.Qbittorrent.csproj --configuration Release --no-build --output nupkg
 
     - name: Extract version from .csproj
       id: extract_version
       run: |
-        VERSION=$(xmllint --xpath "string(//Project/PropertyGroup/Version)" AnotherQbittorrent/AnotherQbittorrent.csproj)
+        VERSION=$(xmllint --xpath "string(//Project/PropertyGroup/Version)" Banned.Qbittorrent/Banned.Qbittorrent.csproj)
         echo "version=$VERSION" >> $GITHUB_ENV
 
     - name: Push NuGet package
       run: |
-        NUPKG_FILE=$(find nupkg -name "AnotherQbittorrent.$version.nupkg" -print -quit)
+        NUPKG_FILE=$(find nupkg -name "Banned.Qbittorrent.$version.nupkg" -print -quit)
         if [ -z "$NUPKG_FILE" ]; then
           echo "Error: NuGet package not found!"
           exit 1
