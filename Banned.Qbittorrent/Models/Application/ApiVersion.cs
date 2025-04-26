@@ -1,4 +1,4 @@
-namespace AnotherQbittorrent.Models.Application;
+namespace Banned.Qbittorrent.Models.Application;
 
 public class ApiVersion : IComparable<ApiVersion>
 {

@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace AnotherQbittorrent.Models.Requests;
+namespace Banned.Qbittorrent.Models.Requests;
 
 public class AddTorrentRequest
 {

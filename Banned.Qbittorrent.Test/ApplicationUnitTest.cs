@@ -1,4 +1,4 @@
-namespace AnotherQbittorrent.Test;
+namespace Banned.Qbittorrent.Test;
 
 public class ApplicationUnitTest
 {

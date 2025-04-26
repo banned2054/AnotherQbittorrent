@@ -1,7 +1,7 @@
-using AnotherQbittorrent.Models.Application;
-using AnotherQbittorrent.Utils;
+using Banned.Qbittorrent.Models.Application;
+using Banned.Qbittorrent.Utils;
 
-namespace AnotherQbittorrent.Services;
+namespace Banned.Qbittorrent.Services;
 
 public class ApplicationService(NetUtils netUtils)
 {

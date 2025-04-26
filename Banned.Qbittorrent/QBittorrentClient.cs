@@ -1,7 +1,7 @@
-using AnotherQbittorrent.Services;
-using AnotherQbittorrent.Utils;
+using Banned.Qbittorrent.Services;
+using Banned.Qbittorrent.Utils;
 
-namespace AnotherQbittorrent;
+namespace Banned.Qbittorrent;
 
 public class QBittorrentClient
 {

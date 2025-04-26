@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 
-namespace AnotherQbittorrent.Utils;
+namespace Banned.Qbittorrent.Utils;
 
 public class NetUtils
 {

@@ -1,6 +1,6 @@
-using AnotherQbittorrent.Models.Enums;
+using Banned.Qbittorrent.Models.Enums;
 
-namespace AnotherQbittorrent.Models.Torrent;
+namespace Banned.Qbittorrent.Models.Torrent;
 
 public class TorrentFileInfo
 {

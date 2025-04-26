@@ -1,6 +1,6 @@
-using AnotherQbittorrent.Models.Enums;
+using Banned.Qbittorrent.Models.Enums;
 
-namespace AnotherQbittorrent.Models.Requests;
+namespace Banned.Qbittorrent.Models.Requests;
 
 public class GetTorrentInfoListRequest
 {

@@ -1,12 +1,12 @@
-using AnotherQbittorrent.Models.Application;
-using AnotherQbittorrent.Models.Enums;
-using AnotherQbittorrent.Models.Requests;
-using AnotherQbittorrent.Models.Torrent;
-using AnotherQbittorrent.Utils;
+using Banned.Qbittorrent.Models.Application;
+using Banned.Qbittorrent.Models.Enums;
+using Banned.Qbittorrent.Models.Requests;
+using Banned.Qbittorrent.Models.Torrent;
+using Banned.Qbittorrent.Utils;
 using System.Net;
 using System.Text.Json;
 
-namespace AnotherQbittorrent.Services;
+namespace Banned.Qbittorrent.Services;
 
 public class TorrentService(NetUtils netUtils, ApiVersion apiVersion)
 {

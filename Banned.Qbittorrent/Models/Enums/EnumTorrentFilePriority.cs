@@ -1,4 +1,4 @@
-namespace AnotherQbittorrent.Models.Enums;
+namespace Banned.Qbittorrent.Models.Enums;
 
 public enum EnumTorrentFilePriority
 {

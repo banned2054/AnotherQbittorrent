@@ -1,9 +1,9 @@
-using AnotherQbittorrent.Models.Enums;
-using AnotherQbittorrent.Models.Torrent;
+using Banned.Qbittorrent.Models.Enums;
+using Banned.Qbittorrent.Models.Torrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace AnotherQbittorrent.Utils;
+namespace Banned.Qbittorrent.Utils;
 
 /// <summary>
 /// Qbittorrent版本小于5.x.x的实现方法

@@ -1,6 +1,4 @@
-using System.Text.Json;
-
-namespace AnotherQbittorrent.Test;
+namespace Banned.Qbittorrent.Test;
 
 public class TorrentUnitTest
 {
@@ -25,9 +23,9 @@ public class TorrentUnitTest
         var torrentPaths =
             new List<string>
             {
-                "D:\\Downloads\\Your.Forma.S01E01.1080p.BILI.WEB-DL.AAC2.0.H.264-VARYG.torrent"
+                @"D:\Downloads\Your.Forma.S01E01.1080p.BILI.WEB-DL.AAC2.0.H.264-VARYG.torrent"
             };
-        var tags = "test";
+        const string tags = "test";
         await _client.Torrent.AddTorrentAsync(
                                               filePaths : torrentPaths,
                                               savePath : "/downloads",
