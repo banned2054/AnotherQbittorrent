@@ -36,8 +36,24 @@ public class TorrentUnitTest
     }
 
     [Test]
+    public async Task GetTorrents()
+    {
+        var trackers =
+            await _client.Torrent.GetTorrentInfosAsync(hash :
+                                                       "a940478142ad9d776a342f512a59e53c3304b8cee4de991c3b09e0bf214f366d");
+        if (trackers.Count == 0)
+        {
+            Console.WriteLine("Not find");
+        }
+        else
+        {
+            Console.WriteLine(trackers[0]);
+        }
+    }
+
+    [Test]
     public async Task GetTorrentTrackers()
     {
-        var trackers = await _client.Torrent.GetTorrentInfosAsync(hash : "d092ce98ea297205dfb30433e127b9980a2dd23f");
+        var trackers = await _client.Torrent.GetTorrentInfosAsync(hash : "0f9323316a62a4a6b66a5568893a52c3a342501d");
     }
 }
