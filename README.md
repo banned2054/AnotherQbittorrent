@@ -33,10 +33,6 @@ await client.PauseTorrentsAsync(new[] { "torrent_hash" });
 await client.ResumeTorrentsAsync(new[] { "torrent_hash" });
 ```
 
-## Version
-
-Current version: 0.0.1
-
 ## License
 
 This project is licensed under the Apache License 2.0.
