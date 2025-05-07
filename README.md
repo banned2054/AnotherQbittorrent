@@ -21,7 +21,7 @@ using Banned.Qbittorrent;
 var client = new QbittorrentClient("http://localhost:8080", "username", "password");
 
 // Get torrent list
-var torrents = await client.GetTorrentListAsync();
+var torrents = await client.GetTorrentInfosAsync();
 
 // Add a new torrent
 await client.AddTorrentAsync("magnet:?xt=urn:btih:...");
