@@ -30,14 +30,14 @@ public class TorrentService(NetUtils netUtils, ApiVersion apiVersion)
     /// <param name="offset">结果偏移量<br/>Result offset</param>
     /// <param name="hash">单个种子的哈希值<br/>Hash value of a single torrent</param>
     /// <returns>种子信息列表<br/>List of torrent information</returns>
-    public async Task<List<TorrentInfo>> GetTorrentInfosAsync(EnumTorrentFilter filter   = EnumTorrentFilter.All,
-                                                              string?           category = null,
-                                                              string?           tag      = null,
-                                                              string?           sort     = null,
-                                                              bool              reverse  = false,
-                                                              int               limit    = 0,
-                                                              int               offset   = 0,
-                                                              string            hash     = "")
+    public async Task<List<TorrentInfo>> GetTorrentInfoAsync(EnumTorrentFilter filter   = EnumTorrentFilter.All,
+                                                             string?           category = null,
+                                                             string?           tag      = null,
+                                                             string?           sort     = null,
+                                                             bool              reverse  = false,
+                                                             int               limit    = 0,
+                                                             int               offset   = 0,
+                                                             string            hash     = "")
     {
         var hashList = hash == "" ? null : new List<string> { hash };
         return await GetTorrentInfosAsync(filter, category, tag, sort, reverse, limit, offset, hashList);
@@ -65,10 +65,12 @@ public class TorrentService(NetUtils netUtils, ApiVersion apiVersion)
                                                               int               offset   = 0,
                                                               List<string>?     hashList = null)
     {
-        var parameters = new Dictionary<string, string>
+        var parameters = new Dictionary<string, string>();
+
+        if (filter != EnumTorrentFilter.All)
         {
-            { "filter", filter.ToString().ToLower() }
-        };
+            parameters.Add("filter", filter.ToString().ToLower());
+        }
 
         if (!string.IsNullOrEmpty(category)) parameters.Add("category", category);
         if (!string.IsNullOrEmpty(tag)) parameters.Add("tag", tag);
